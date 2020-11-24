@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 public class GraphicalManagementMenu extends Application {
 
     public void start(Stage primaryStage) {
+        Button OwnerBtn = new Button("Show Owners");
         Button exitbtn = new Button("EXIT");
         exitbtn.setOnAction(e -> Platform.exit());
         VBox root = new VBox();
@@ -16,6 +17,7 @@ public class GraphicalManagementMenu extends Application {
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);
         primaryStage.show();
+
     }
 
 }
