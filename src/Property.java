@@ -1,29 +1,34 @@
 public class Property {
-    private Owner owner;
+    private String owner;
     private String address;
     private String eircode;
-    private int EMV;
+    private double EMV;
     private String location;
-    private boolean Ppr;
+    private String Ppr;
 
-    public Property(Owner o, String a, String e, int E, String l, boolean P) {
-        this.owner = o;
-        this.address = a;
-        this.eircode = e;
-        this.EMV = E;
-        this.location = l;
-        this.Ppr = P;
+    public Property(String l) {
+        String[] arrOfStr = l.split(" ");
+        this.owner = arrOfStr[1];// property can have more than one owner -needs to be changed to suit this
+        this.address = arrOfStr[2];
+        this.eircode = arrOfStr[3];
+        this.EMV = Double.parseDouble(arrOfStr[4]);
+        this.location = arrOfStr[5];
+        this.Ppr = arrOfStr[6];
+    }
+
+    public void addProperty(Owner o, Property p) {
+        o.addProperty(p);
     }
 
     public String toString() {
         return owner + address + eircode + EMV + location + Ppr;
     }
 
-    public Owner getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(Owner owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
@@ -43,11 +48,11 @@ public class Property {
         this.eircode = eircode;
     }
 
-    public int getEMV() {
+    public double getEMV() {
         return EMV;
     }
 
-    public void setEMV(int eMV) {
+    public void setEMV(double eMV) {
         EMV = eMV;
     }
 
@@ -59,11 +64,11 @@ public class Property {
         this.location = location;
     }
 
-    public boolean isPpr() {
+    public String isPpr() {
         return Ppr;
     }
 
-    public void setPpr(boolean ppr) {
+    public void setPpr(String ppr) {
         Ppr = ppr;
     }
 
