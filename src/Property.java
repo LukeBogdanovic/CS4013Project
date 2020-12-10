@@ -51,4 +51,8 @@ public class Property {
         return Ppr;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
 }

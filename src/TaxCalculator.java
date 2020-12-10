@@ -83,18 +83,15 @@ public class TaxCalculator {
         return penalty;
     }
 
-    public void writeCSV() {
-        try {
-            FileWriter fw = new FileWriter(path, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-
-            pw.print("\n" + year + "," + owner + "," + property + "," + value + "," + eircode);
-            pw.flush();
-            pw.close();
-        } catch (Exception e) {
-            System.out.println("bruh u r spaz innit");
-        }
-
-    }
+    /*
+     * public void writeCSV() { try { FileWriter fw = new FileWriter(path, true);
+     * BufferedWriter bw = new BufferedWriter(fw); PrintWriter pw = new
+     * PrintWriter(bw);
+     * 
+     * pw.print("\n" + year + "," + owner + "," + property + "," + value + "," +
+     * eircode); pw.flush(); pw.close(); } catch (Exception e) {
+     * System.out.println("bruh u r spaz innit"); }
+     * 
+     * }
+     */
 }

@@ -1,10 +1,14 @@
 import java.util.Scanner;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class ManagementMenu {
     private Scanner in;
-    ArrayList<Owner> ownerList;
+    ArrayList<Owner> ownerList;// need to add owners to this list at startup of program
 
     // initialises scanner for the CLI management menu
     public ManagementMenu() {
@@ -18,13 +22,22 @@ public class ManagementMenu {
         TaxCalculator tC = new TaxCalculator();
         Statistics st = new Statistics();
         while (more) {
-            System.out.println("P)roperty tax // O)wners tax // S)tatistics // Q)uit ");
+            System.out.println("P)roperty tax // O)wners tax // OV)erdue tax // S)tatistics // Q)uit ");
             String command = in.nextLine().toUpperCase();
+            //gets tax paid for a property specified by the management user
             if (command.equals("P")) {
                 Property p = getProperty();
-            } else if (command.equals("O")) {
+            }
+            //gets all tax paid by a property Owner specified by the management user
+            else if (command.equals("O")) {
 
-            } else if (command.equals("S")) {
+            }
+
+            else if(command.equals("OV")){
+
+            } 
+            //gets statistics based on the tax paid on properties by owners
+            else if (command.equals("S")) {
                 boolean M = true;
                 while (M) {
                     System.out.println(
@@ -34,23 +47,33 @@ public class ManagementMenu {
                     if (com.equals("T")) {
                         System.out.println("Eircode key for routing:");
                         String eC = in.nextLine().toUpperCase();
-                        System.out.println(st.totalTaxPaid(eC));
-                    } else if (com.equals("A")) {
+                        System.out.println(st.totalTaxPaid(eC,));
+                    } 
+
+                    else if (com.equals("A")) {
                         System.out.println("Eircode key for routing:");
                         String eC = in.nextLine().toUpperCase();
                         System.out.println(st.averageTaxPaid(eC));
-                    } else if (com.equals("N")) {
+                    } 
+
+                    else if (com.equals("N")) {
                         System.out.println("Eircode key for routing:");
                         String eC = in.nextLine().toUpperCase();
                         System.out.println(st.percentageOfTaxesPaid(eC));
-                    } else if (com.equals("B")) {
+                    } 
+
+                    else if (com.equals("B")) {
                         M = false;
                     }
                 }
-            } else if (command.equals("Q")) {
+            } 
+            //quits the program
+            else if (command.equals("Q")) {
                 more = false;// ends the program for user
             }
         }
+        InterfaceSelect iSelect = new InterfaceSelect();
+        iSelect.run();
     }
 
     // gets and list owners from the arraylist provided to it
@@ -89,6 +112,23 @@ public class ManagementMenu {
                 return PChoices.get(n);
             }
         }
+    }
+
+    // reads in csv file for names of owners already in the system
+    private String csvReader(String filename) throws IOException {
+        Path pathToFile = Paths.get(filename);
+        String name = "";
+        try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
+            String line = br.readLine();
+            while (line != null) {
+                String[] attributes = line.split(",");
+                name = attributes[0];
+                line = br.readLine();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return name;
     }
 
 }

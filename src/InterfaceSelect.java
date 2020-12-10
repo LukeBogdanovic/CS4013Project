@@ -1,13 +1,12 @@
 import javafx.application.Application;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.Scanner;
 
 public class InterfaceSelect {
     Scanner in;
 
-    public void run() throws IOException, ParseException {
+    public void run() throws IOException {
         in = new Scanner(System.in);
         System.out.println("C)ommand Line Interface // G)raphical User Interface");
         String command = in.nextLine().toUpperCase();

@@ -5,8 +5,6 @@ public class Payment {
     private LocalDate date;
     private Owner Owner;
     private Property property;
-    private double taxDue;
-    private double unpaid;
 
     public Payment(double amount, LocalDate date, Owner owner, Property property) {
         this.amount = amount;
