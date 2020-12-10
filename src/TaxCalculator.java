@@ -1,10 +1,7 @@
-import java.util.Date;
 import java.time.LocalDate;
-import java.io.*;
 
 public class TaxCalculator {
     private double fixedCost, flatPprCharge, annualPenalty;
-    private String path = "tax.csv";
     private String[] Locations;// array for locations and respective charges
     private double[] pValues, locationsCharge, propertyRates;// array for property values and respective charges
 
@@ -31,6 +28,9 @@ public class TaxCalculator {
 
     // checks the outstanding tax of a single property
     public double propertyTax(Property p) {
+        if (getPenalty(p, d)) {
+
+        }
         return fixedCost + p.getEMV() * getMVTRate(p) + getLocationCharge(p)
                 + ((p.isPpr() == true) ? flatPprCharge : 0);
     }
@@ -38,12 +38,7 @@ public class TaxCalculator {
     // calculates the outstanding tax of properties owned by an Owner
     public double propertyTax(Owner o) {
         double taxO = 0;
-        for (Property ob : o.getProperties()) {
-            taxO = taxO + fixedCost;
-            // taxO = taxO + getLocationCharge(p);
-            // taxO = taxO + getMVTRate(p);
-            taxO = taxO + flatPprCharge;
-        }
+
         return taxO;
     }
 
@@ -75,12 +70,18 @@ public class TaxCalculator {
 
     // gets the annual penalty rate for properties that have not had tax paid on
     // them for different years
-    public double getPenalty(Property p, double d) {
-        LocalDate now = LocalDate.now();
-        
-        double penalty = 0;
-        for(int i = 0; i < )
+    public boolean getPenalty(Property p, double d) {
+        boolean penalty = false;
+
         return penalty;
+    }
+
+    // checks how many times the date has passed jan 1st since the registration of
+    // property
+    private int dateCheck(Property p) {
+        int count = 0;
+        count = (int) java.time.temporal.ChronoUnit.YEARS.between(p.getDate(), LocalDate.now());
+        return count;
     }
 
     /*

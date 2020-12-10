@@ -32,7 +32,6 @@ public class GraphicalManagementMenu extends Application implements EventHandler
 
     @Override
     public void handle(ActionEvent event) {
-        // TODO Auto-generated method stub
 
     }
 
