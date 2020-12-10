@@ -1,40 +1,28 @@
 import java.util.ArrayList;
 
-public class Owner extends OwnerDB {
-    private String name;
-    ArrayList<Property> properties;
+public class Owner {
+    private String name;// name of the owner of the properties
+    private ArrayList<Property> properties;// arraylist of properties owned by an owner
 
-    public Owner() {
-    }
-
+    // creates an owner object using the name of the owner
     public Owner(String n) {
         this.name = n;
-        this.properties = new ArrayList<Property>();
+        properties = new ArrayList<Property>();
     }
 
+    // adds a property to the properties arraylist
     public void addProperty(Property p) {
         properties.add(p);
     }
 
-    @Override
-    public String toString() {
-        return name;
-    }
-
+    // returns the name of an owner
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    // returns the arraylist of properties
     public ArrayList<Property> getProperties() {
         return properties;
-    }
-
-    public void setProperties(ArrayList<Property> properties) {
-        this.properties = properties;
     }
 
 }

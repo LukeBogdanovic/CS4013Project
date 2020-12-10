@@ -1,52 +1,59 @@
 import java.util.Scanner;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ManagementMenu {
     private Scanner in;
+    ArrayList<Owner> ownerList;
 
+    // initialises scanner for the CLI management menu
     public ManagementMenu() {
         in = new Scanner(System.in);
+        this.ownerList = new ArrayList<Owner>();
     }
 
-    public void run() {
+    // runs the management menu for users
+    public void run() throws IOException {
         boolean more = true;
-        OwnerDB Owners = new OwnerDB();
-        Owner owner = new Owner();
+        TaxCalculator tC = new TaxCalculator();
+        Statistics st = new Statistics();
         while (more) {
-            System.out.println("L)ist Owners S)tatistics R)egister property Q)uit ");
+            System.out.println("P)roperty tax // O)wners tax // S)tatistics // Q)uit ");
             String command = in.nextLine().toUpperCase();
-            if (command.equals("L")) {
-                Owner o = getOwners(Owners.getOwners());
-                System.out.println("L)ist Properties B)ack");
-                String com = in.nextLine();
-                if (com.equals("L")) {
+            if (command.equals("P")) {
+                Property p = getProperty();
+            } else if (command.equals("O")) {
 
-                }
             } else if (command.equals("S")) {
-                System.out.println(
-                        "Choose Statistic\nT)otal Tax Paid,A)verage Tax Paid,N)umber and Percentage of Property Taxes Paid B)ack");
-                String com = in.nextLine().toUpperCase();
-                if (com.equals("T")) {
+                boolean M = true;
+                while (M) {
+                    System.out.println(
+                            "Choose Statistic\nT)otal Tax Paid // A)verage Tax Paid // N)umber and Percentage of Property Taxes Paid // B)ack");
+                    String com = in.nextLine().toUpperCase();
 
-                } else if (com.equals("A")) {
-
-                } else if (com.equals("N")) {
-
-                } else if (com.equals("B")) {
+                    if (com.equals("T")) {
+                        System.out.println("Eircode key for routing:");
+                        String eC = in.nextLine().toUpperCase();
+                        System.out.println(st.totalTaxPaid(eC));
+                    } else if (com.equals("A")) {
+                        System.out.println("Eircode key for routing:");
+                        String eC = in.nextLine().toUpperCase();
+                        System.out.println(st.averageTaxPaid(eC));
+                    } else if (com.equals("N")) {
+                        System.out.println("Eircode key for routing:");
+                        String eC = in.nextLine().toUpperCase();
+                        System.out.println(st.percentageOfTaxesPaid(eC));
+                    } else if (com.equals("B")) {
+                        M = false;
+                    }
                 }
-            } else if (command.equals("R")) {
-                System.out.println(
-                        "Property(Owner(s) Address Eircode Estimated_Property_Value Location Principal_Primary_Residence)");
-                System.out.println("Owner Input Format:owner1_owner2 etc... // Eircode Input Format:X00_XXXX");
-                String com = in.nextLine();
-                Property p = new Property(com);
-                owner.addProperty(p);
             } else if (command.equals("Q")) {
-                more = false;
+                more = false;// ends the program for user
             }
         }
     }
 
+    // gets and list owners from the arraylist provided to it
     private Owner getOwners(ArrayList<Owner> OChoices) {
         if (OChoices.size() == 0) {
             return null;
@@ -54,7 +61,7 @@ public class ManagementMenu {
         while (true) {
             char c = 'A';
             for (Owner OChoice : OChoices) {
-                System.out.println(c + ") " + OChoice.toString());
+                System.out.println(c + ") " + OChoice);
                 c++;
             }
             String input = in.nextLine();
@@ -65,6 +72,7 @@ public class ManagementMenu {
         }
     }
 
+    // gets and lists properties from the arraylist provided to it
     private Property getProperty(ArrayList<Property> PChoices) {
         if (PChoices.size() == 0) {
             return null;

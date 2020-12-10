@@ -8,8 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.scene.robot.*;
 
-public class GraphicalManagementMenu extends Application {
+public class GraphicalManagementMenu extends Application implements EventHandler<ActionEvent> {
 
     @Override
     public void start(Stage primaryStage) {
@@ -26,6 +27,12 @@ public class GraphicalManagementMenu extends Application {
         hbox.getChildren().add(btRegister);
 
         BorderPane borderPane = new BorderPane();
+
+    }
+
+    @Override
+    public void handle(ActionEvent event) {
+        // TODO Auto-generated method stub
 
     }
 

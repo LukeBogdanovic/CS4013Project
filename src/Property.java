@@ -1,75 +1,54 @@
-public class Property {
-    private String owner;
-    private String address;
-    private String eircode;
-    private double EMV;
-    private String location;
-    private String Ppr;
+import java.time.LocalDate;
 
-    public Property(String l) {
-        String[] arrOfStr = l.split(" ");
-        this.owner = arrOfStr[1];// property can have more than one owner -needs to be changed to suit this
-        this.address = arrOfStr[2];
-        this.eircode = arrOfStr[3];
-        this.EMV = Double.parseDouble(arrOfStr[4]);
-        this.location = arrOfStr[5];
-        this.Ppr = arrOfStr[6];
+public class Property {
+    private String owner, address, eircode, location;// eircode,owner,address,location of the property
+    private double EMV;// Estimated market value variable
+    private boolean Ppr;// Principal private residence variable
+    private LocalDate date;// year of the resgistry of the property
+
+    public Property(String owner, String address, String eircode, String location, double EMV, boolean Ppr,
+            LocalDate date) {
+        this.owner = owner;// property can have more than one owner
+        this.address = address;
+        this.eircode = eircode;
+        this.EMV = EMV;
+        this.location = location;
+        this.Ppr = Ppr;
+        this.date = date;
     }
 
+    // adds a property to the property arraylist in Owner
     public void addProperty(Owner o, Property p) {
         o.addProperty(p);
     }
 
+    @Override
     public String toString() {
-        return owner + address + eircode + EMV + location + Ppr;
+        return owner + " " + address + " " + eircode;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
+    // getter for the eircode
     public String getEircode() {
         return eircode;
     }
 
-    public void setEircode(String eircode) {
-        this.eircode = eircode;
-    }
-
+    // getter for the estimated market value
     public double getEMV() {
         return EMV;
     }
 
-    public void setEMV(double eMV) {
-        EMV = eMV;
+    // getter for the address
+    public String getAddress() {
+        return address;
     }
 
+    // getter for the location of the property
     public String getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String isPpr() {
+    public boolean isPpr() {
         return Ppr;
-    }
-
-    public void setPpr(String ppr) {
-        Ppr = ppr;
     }
 
 }
