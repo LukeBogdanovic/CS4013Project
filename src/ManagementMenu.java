@@ -8,7 +8,10 @@ import java.util.ArrayList;
 
 public class ManagementMenu {
     private Scanner in;
-    ArrayList<Owner> ownerList;// need to add owners to this list at startup of program
+    private ArrayList<Owner> ownerList;// need to add owners to this list at startup of program
+    private TaxCalculator tC;
+    private Statistics st;
+    private Owner owner;
 
     // initialises scanner for the CLI management menu
     public ManagementMenu() {
@@ -19,24 +22,27 @@ public class ManagementMenu {
     // runs the management menu for users
     public void run() throws IOException {
         boolean more = true;
-        TaxCalculator tC = new TaxCalculator();
-        Statistics st = new Statistics();
+        tC = new TaxCalculator();
+        st = new Statistics();
         while (more) {
             System.out.println("P)roperty tax // O)wners tax // OV)erdue tax // S)tatistics // Q)uit ");
             String command = in.nextLine().toUpperCase();
-            //gets tax paid for a property specified by the management user
+            // gets tax paid for a property specified by the management user
             if (command.equals("P")) {
-                Property p = getProperty();
+                Property p = getProperty(owner.getProperties());
+                System.out.println(tC.propertyTax(p));
             }
-            //gets all tax paid by a property Owner specified by the management user
+            // gets all tax paid by a property Owner specified by the management user
             else if (command.equals("O")) {
+                ownerList = new ArrayList<Owner>();
+                Owner o = getOwners(ownerList);
 
             }
 
-            else if(command.equals("OV")){
+            else if (command.equals("OV")) {
 
-            } 
-            //gets statistics based on the tax paid on properties by owners
+            }
+            // gets statistics based on the tax paid on properties by owners
             else if (command.equals("S")) {
                 boolean M = true;
                 while (M) {
@@ -47,27 +53,27 @@ public class ManagementMenu {
                     if (com.equals("T")) {
                         System.out.println("Eircode key for routing:");
                         String eC = in.nextLine().toUpperCase();
-                        System.out.println(st.totalTaxPaid(eC,));
-                    } 
+                        System.out.println(st.totalTaxPaid(eC, "src/properties.csv"));
+                    }
 
                     else if (com.equals("A")) {
                         System.out.println("Eircode key for routing:");
                         String eC = in.nextLine().toUpperCase();
-                        System.out.println(st.averageTaxPaid(eC));
-                    } 
+                        System.out.println(st.averageTaxPaid(eC, "src/properties.csv"));
+                    }
 
                     else if (com.equals("N")) {
                         System.out.println("Eircode key for routing:");
                         String eC = in.nextLine().toUpperCase();
-                        System.out.println(st.percentageOfTaxesPaid(eC));
-                    } 
+                        System.out.println(st.percentageOfTaxesPaid(eC, "src/properties.csv"));
+                    }
 
                     else if (com.equals("B")) {
                         M = false;
                     }
                 }
-            } 
-            //quits the program
+            }
+            // quits the program
             else if (command.equals("Q")) {
                 more = false;// ends the program for user
             }

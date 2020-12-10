@@ -38,7 +38,9 @@ public class TaxCalculator {
     // calculates the outstanding tax of properties owned by an Owner
     public double propertyTax(Owner o) {
         double taxO = 0;
-
+        for (int i = 0; i < o.getProperties().size(); i++) {
+            taxO = taxO + propertyTax(o.getProperties().get(i));
+        }
         return taxO;
     }
 
@@ -70,7 +72,7 @@ public class TaxCalculator {
 
     // gets the annual penalty rate for properties that have not had tax paid on
     // them for different years
-    public boolean getPenalty(Property p, double d) {
+    public boolean getPenalty(Property p) {
         boolean penalty = false;
 
         return penalty;
