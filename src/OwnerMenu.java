@@ -27,7 +27,8 @@ public class OwnerMenu {
         owner = new Owner(name);
         tC = new TaxCalculator();
         while (more) {
-            System.out.println("P)ay tax // L)ist properties and Tax Due // R)egister properties // Q)uit");
+            System.out.println(
+                    "P)ay tax // L)ist properties and Tax Due // B)alancing Statements // R)egister properties // Q)uit");
             String command = in.nextLine().toUpperCase();
             // allows user to pay the tax due on their property-year check of some sort
             // needed
@@ -37,7 +38,7 @@ public class OwnerMenu {
                 System.out.println("To be Paid:" + tC.propertyTax(p));// needs extra work done for getting penalty
                 double toPay = in.nextDouble();
                 in.nextLine();
-                Payment pay = new Payment(toPay, LocalDate.now(), owner, p);
+                Payment pay = new Payment(toPay, LocalDate.now(), owner, p, true);
                 writeToPayments("src/payments.csv", pay);
                 String paid = pay.payTax(p, toPay, tC.propertyTax(p));
                 System.out.println("Paid:" + paid + " For Property:" + p);
@@ -45,6 +46,26 @@ public class OwnerMenu {
             // lists the properties and taxes due on each of properties
             else if (command.equals("L")) {
                 System.out.println(getProperty(owner.getProperties()));
+            }
+            // gets balancing statements based on the Owner or Property as decided by the
+            // user
+            else if (command.equals("B")) {
+                System.out.println("P)roperty Eircode// A)ll properties");
+                String com = in.nextLine();
+                // property balancing statement
+                if (com.equals("P")) {
+                    String eircode = in.nextLine();
+                    for (int i = 0; i < owner.getProperties().size(); i++) {
+                        if (eircode.equals(owner.getProperties().get(i).getEircode())) {
+                            System.out.println(tC.balancingStatement(owner.getProperties().get(i)));
+                            break;
+                        }
+                    }
+                }
+                // Owner balancing statement
+                else if (com.equals("A")) {
+                    System.out.println(tC.balancingStatement(owner));
+                }
             }
             // allows a user to register a property
             else if (command.equals("R")) {

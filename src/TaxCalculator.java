@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 
 public class TaxCalculator {
@@ -5,6 +10,7 @@ public class TaxCalculator {
     private String[] Locations;// array for locations and respective charges
     private double[] pValues, locationsCharge, propertyRates;// array for property values and respective charges
 
+    // default constructor for TaxCalculator class
     public TaxCalculator() {
         this.fixedCost = 100;
         this.flatPprCharge = 100;
@@ -15,6 +21,7 @@ public class TaxCalculator {
         this.propertyRates = new double[] { 0, 0.01, 0.02, 0.04 };
     }
 
+    // variable constructor for TaxCalculator Class
     public TaxCalculator(double fixedCost, double flatPprCharge, double annualPenalty, String[] Locations,
             double[] pValues, double[] locationsCharge, double[] propertyRates) {
         this.fixedCost = fixedCost;
@@ -28,9 +35,11 @@ public class TaxCalculator {
 
     // checks the outstanding tax of a single property
     public double propertyTax(Property p) {
-        if (getPenalty(p, d)) {
+        if (getPenalty(p)) {
 
         }
+        // this returns the propertyTax without penalties applied if no unpaid years are
+        // found
         return fixedCost + p.getEMV() * getMVTRate(p) + getLocationCharge(p)
                 + ((p.isPpr() == true) ? flatPprCharge : 0);
     }
@@ -74,8 +83,26 @@ public class TaxCalculator {
     // them for different years
     public boolean getPenalty(Property p) {
         boolean penalty = false;
-
+        if(){
+            penalty = true;
+        }
         return penalty;
+    }
+
+    // returns a balancing statement for a particular Owner
+    public String balancingStatement(Owner o) {
+        return "This owner accumulated " + propertyTax(o) + " in taxes on their properties this year";
+    }
+
+    /*
+     * returns a balancing statement for a particular Owner on a particular year
+     * public String balancingStatement(Owner o, LocalDate year) { return
+     * "This owner owes "+ }
+     */
+
+    // returns a balancing statement for a particular property for
+    public String balancingStatement(Property p) {
+        return "This property has " + propertyTax(p) + " due in taxes this year";
     }
 
     // checks how many times the date has passed jan 1st since the registration of
@@ -86,15 +113,25 @@ public class TaxCalculator {
         return count;
     }
 
-    /*
-     * public void writeCSV() { try { FileWriter fw = new FileWriter(path, true);
-     * BufferedWriter bw = new BufferedWriter(fw); PrintWriter pw = new
-     * PrintWriter(bw);
-     * 
-     * pw.print("\n" + year + "," + owner + "," + property + "," + value + "," +
-     * eircode); pw.flush(); pw.close(); } catch (Exception e) {
-     * System.out.println("bruh u r spaz innit"); }
-     * 
-     * }
-     */
+    // compounds tax years together
+    private double compoundTax(Property p, double yearPrevious) {
+        return (yearPrevious * (1 + annualPenalty)) + propertyTax(p);
+    }
+
+    // reads in data from a csv file
+    private String csvReader(String filename) throws IOException {
+        Path pathToFile = Paths.get(filename);
+        String name = "";
+        try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
+            String line = br.readLine();
+            while (line != null) {
+                String[] attributes = line.split(",");
+                name = attributes[0];
+                line = br.readLine();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return name;
+    }
 }

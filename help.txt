@@ -1,0 +1,6 @@
+https://github.com/LukeBogdanovic/CS4013Project
+Compiliation at the command line:
+WITH JAVA 1.8:
+javac *.java
+TO RUN THE PROGRAM:
+java main

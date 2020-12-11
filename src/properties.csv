@@ -1,11 +1,12 @@
 Owner,Address,Eircode,Location,Estimated Market Value,Principal Residence,Date Registered
-Luke Bogdanovic,,V95 KD6Y,Countryside,475000,true,2008-10-31
-Seanie Lambe,,,Village,345900,true,2008-07-14
-Jack Ryan,,,Village,567000,false,2006-12-20
-Jack Ryan,,,Small Town,234000,false,2008-03-25
-Luke Bogdanovic,,,Large Town,265000,false,2017-07-06
-Kenny Schrub,,,City,145000,true,2012-05-05
+Luke Bogdanovic,Killmallock Limerick,V95 KD6Y,Countryside,475000,true,2008-10-31
+Seanie Lambe,Castletroy Limerick,V95 7h6r,Village,345900,true,2008-07-14
+Jack Ryan,Cashel Tipperary,E25 ER34,Village,567000,false,2006-12-20
+Jack Ryan,Cork,T12 H45E,Small Town,234000,false,2008-03-25
+Luke Bogdanovic,,E43 A4F5,Large Town,265000,false,2017-07-06
+Kenny Schrub,,E25 ER87,City,145000,true,2012-05-05
 Nemanja Isakovic,,V95 D47U,Countryside,660000,true,2006-01-04
-Nikola Kovac,,,Small Town,543000,true,2019-10-31
-Seanie Lambe,,,Large Town,135000,false,2013-08-04
-Jack Ryan,,,City,715000,true,2006-01-04
+Nikola Kovac,,T12 G7U4,Small Town,543000,true,2019-10-31
+Seanie Lambe,,T12 6Fhr,Large Town,135000,false,2013-08-04
+Jack Ryan,,E25 T6u4,City,715000,true,2006-01-04
+Luke,LIMERICK,V94 K1CY,CITY,2001-06-11,false
