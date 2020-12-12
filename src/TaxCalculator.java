@@ -4,11 +4,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class TaxCalculator {
     private double fixedCost, flatPprCharge, annualPenalty;
     private String[] Locations;// array for locations and respective charges
     private double[] pValues, locationsCharge, propertyRates;// array for property values and respective charges
+    private ArrayList<String> propertiesFromCSV, paymentsFromCSV;
 
     // default constructor for TaxCalculator class
     public TaxCalculator() {
@@ -33,19 +35,18 @@ public class TaxCalculator {
         this.propertyRates = propertyRates;
     }
 
-    // checks the outstanding tax of a single property
-    public double propertyTax(Property p) {
-        if (getPenalty(p)) {
+    public double overallTax(Property p) throws IOException {
+        return propertyTax(p) + overdueTax(p);
+    }
 
-        }
-        // this returns the propertyTax without penalties applied if no unpaid years are
-        // found
+    // checks the outstanding tax of a single property for one year-no penalty
+    public double propertyTax(Property p) throws IOException {
         return fixedCost + p.getEMV() * getMVTRate(p) + getLocationCharge(p)
                 + ((p.isPpr() == true) ? flatPprCharge : 0);
     }
 
     // calculates the outstanding tax of properties owned by an Owner
-    public double propertyTax(Owner o) {
+    public double propertyTax(Owner o) throws IOException {
         double taxO = 0;
         for (int i = 0; i < o.getProperties().size(); i++) {
             taxO = taxO + propertyTax(o.getProperties().get(i));
@@ -53,8 +54,123 @@ public class TaxCalculator {
         return taxO;
     }
 
+    // gets the overdue tax on a specific property provided by the user
+    public double overdueTax(Property p) throws IOException {
+        double overdueTax = propertyTax(p);
+        for (int i = 0; i < yearsOverdue(p); i++) {
+            overdueTax = compoundTax(p, overdueTax);
+        }
+        return overdueTax;
+    }
+
+    // gets all the overdue tax for all properties -overdue tax
+    // takes into account the compounding of tax as owners do not pay
+    // their property tax
+    public double overdueTax(LocalDate year) throws IOException {
+        int j = 0;
+        double overdueTax = 0, Taxes = 0;
+        Double[] overdueTaxes = new Double[256];
+        String[] property = new String[7], payment = new String[7];
+        propertiesFromCSV = csvReader("src/properties.csv");
+        paymentsFromCSV = csvReader("src/payments.csv");
+        for (int i = 0; i < propertiesFromCSV.size(); i++) {
+            while (j < propertiesFromCSV.size()) {
+                property = propertiesFromCSV.get(i).split(",");
+            }
+            while (j < paymentsFromCSV.size()) {
+                payment = paymentsFromCSV.get(j).split(",");
+            }
+            j++;
+            LocalDate yearPropertyCSV = LocalDate.parse(property[6]);
+            LocalDate yearPaymentCSV = LocalDate.parse(payment[4]);
+            if (yearPropertyCSV == year && yearPaymentCSV == year) {
+                Property p = new Property(property[0], property[1], property[2], property[3],
+                        Double.parseDouble(property[4]), Boolean.parseBoolean(property[5]), yearPropertyCSV);
+                double value = propertyTax(p);
+                for (int k = 0; k < yearsOverdue(p); k++) {
+                    overdueTax = compoundTax(p, value);
+                }
+                overdueTaxes[i] = overdueTax;
+            }
+        }
+        for (int i = 0; i < overdueTaxes.length; i++) {
+            if (overdueTaxes[i] == null) {
+                Taxes = Taxes + overdueTaxes[i];
+            }
+        }
+        return Taxes;
+    }
+
+    // gets the overdue tax for properties based on the eircode routing key
+    public double overdueTax(LocalDate year, String key) throws IOException {
+        int j = 0;
+        double overdueTax = 0, Taxes = 0;
+        Double[] overdueTaxes = new Double[256];
+        String[] property = new String[7], payment = new String[7];
+        propertiesFromCSV = csvReader("src/properties.csv");
+        paymentsFromCSV = csvReader("src/payments.csv");
+        for (int i = 0; i < propertiesFromCSV.size(); i++) {
+            while (j < propertiesFromCSV.size()) {
+                property = propertiesFromCSV.get(i).split(",");
+                break;
+            }
+            while (j < paymentsFromCSV.size()) {
+                payment = paymentsFromCSV.get(j).split(",");
+                break;
+            }
+            j++;
+            LocalDate yearPropertiesCSV = LocalDate.parse(property[6]);
+            LocalDate yearPaymentsCSV = LocalDate.parse(payment[4]);
+            String propertiesEircode = property[2];
+            String[] propertiesKeyCSV = propertiesEircode.split(" ");
+            String propertiesEirKey = propertiesKeyCSV[0];
+            String paymentsEircode = payment[3];
+            String[] paymentsKeyCSV = paymentsEircode.split(" ");
+            String paymentsEirKey = paymentsKeyCSV[0];
+            if (yearPropertiesCSV == year && yearPaymentsCSV == year && propertiesEirKey.equalsIgnoreCase(key)
+                    && key.equals(paymentsEirKey)) {
+                Property p = new Property(property[0], property[1], property[2], property[3],
+                        Double.parseDouble(property[4]), Boolean.parseBoolean(property[5]), yearPropertiesCSV);
+                double value = propertyTax(p);
+                for (int k = 0; k < yearsOverdue(p); k++) {
+                    overdueTax = compoundTax(p, value);
+                }
+                overdueTaxes[i] = overdueTax;
+            }
+        }
+        for (int i = 0; i < overdueTaxes.length; i++) {
+            if (overdueTaxes[i] == null) {
+                Taxes = Taxes + overdueTaxes[i];
+            }
+        }
+        return Taxes;
+    }
+
+    // returns a balancing statement for a particular Owner
+    public String balancingStatement(Owner o) throws IOException {
+        return "This owner accumulated " + propertyTax(o) + " in taxes on their properties this year";
+    }
+
+    // returns a balancing statement for a particular property for
+    public String balancingStatement(Property p) throws IOException {
+        return "This property has " + propertyTax(p) + " due in taxes this year";
+    }
+
+    // counts the number of years a property is overdue on tax
+    private int yearsOverdue(Property p) throws IOException {
+        int count = 0;
+
+        for (int i = 0; i < dateCheck(p); i++) {
+            String[] property = propertiesFromCSV.get(i).split(",");
+            if (getPenalty(p, property)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     // gets the market value tax rate of the property supplied
-    public double getMVTRate(Property p) {
+    private double getMVTRate(Property p) {
         double rate = 0;
         for (int i = 0; i < pValues.length; i++) {
             if (p.getEMV() <= pValues[i]) {
@@ -68,7 +184,7 @@ public class TaxCalculator {
     }
 
     // gets the location tax charge associated with the given location
-    public double getLocationCharge(Property p) {
+    private double getLocationCharge(Property p) {
         double value = 0;
         for (int i = 0; i < Locations.length; i++) {
             if (p.getLocation().equalsIgnoreCase(Locations[i])) {
@@ -79,30 +195,14 @@ public class TaxCalculator {
         return value;
     }
 
-    // gets the annual penalty rate for properties that have not had tax paid on
-    // them for different years
-    public boolean getPenalty(Property p) {
+    // returns true if a given year
+    private boolean getPenalty(Property p, String[] property) throws IOException {
         boolean penalty = false;
-        if(){
+        LocalDate propertyYear = LocalDate.parse(property[6]);
+        if (p.getDate() == propertyYear) {
             penalty = true;
         }
         return penalty;
-    }
-
-    // returns a balancing statement for a particular Owner
-    public String balancingStatement(Owner o) {
-        return "This owner accumulated " + propertyTax(o) + " in taxes on their properties this year";
-    }
-
-    /*
-     * returns a balancing statement for a particular Owner on a particular year
-     * public String balancingStatement(Owner o, LocalDate year) { return
-     * "This owner owes "+ }
-     */
-
-    // returns a balancing statement for a particular property for
-    public String balancingStatement(Property p) {
-        return "This property has " + propertyTax(p) + " due in taxes this year";
     }
 
     // checks how many times the date has passed jan 1st since the registration of
@@ -114,24 +214,24 @@ public class TaxCalculator {
     }
 
     // compounds tax years together
-    private double compoundTax(Property p, double yearPrevious) {
+    private double compoundTax(Property p, double yearPrevious) throws IOException {
         return (yearPrevious * (1 + annualPenalty)) + propertyTax(p);
     }
 
-    // reads in data from a csv file
-    private String csvReader(String filename) throws IOException {
+    // reads in data from csv files
+    private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);
-        String name = "";
+        ArrayList<String> attributes = new ArrayList<String>();
         try (BufferedReader br = Files.newBufferedReader(pathToFile)) {
             String line = br.readLine();
             while (line != null) {
-                String[] attributes = line.split(",");
-                name = attributes[0];
+                attributes.add(line);
                 line = br.readLine();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
-        return name;
+        return attributes;
     }
+
 }

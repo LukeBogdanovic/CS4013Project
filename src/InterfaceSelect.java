@@ -8,7 +8,7 @@ public class InterfaceSelect {
 
     public void run() throws IOException {
         in = new Scanner(System.in);
-        System.out.println("C)ommand Line Interface // G)raphical User Interface");
+        System.out.println("C)ommand Line Interface // G)raphical User Interface // Q)uit");
         String command = in.nextLine().toUpperCase();
         if (command.equals("C")) {
             System.out.println("P)roperty Owner // D)epartment Management");
@@ -23,6 +23,9 @@ public class InterfaceSelect {
         }
         if (command.equals("G")) {
             Application.launch(GraphicalManagementMenu.class);// starts the GUI
+        }
+        if (command.equals("Q")) {
+            return;
         }
     }
 

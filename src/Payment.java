@@ -1,5 +1,4 @@
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class Payment {
     private double amount;
@@ -7,7 +6,6 @@ public class Payment {
     private Owner Owner;
     private Property property;
     private boolean paid;
-    private ArrayList<String> paymentData;
 
     // creates a payment object that is then stored in payments.csv
     public Payment(double amount, LocalDate date, Owner owner, Property property, boolean paid) {
@@ -21,12 +19,6 @@ public class Payment {
     // pays tax for the property specified
     public String payTax(Property p, double payment, double toBePaid) {
         return payment + " paid on property " + p;
-    }
-
-    public double getUnpaid(Property p,String filename) {
-        LocalDate now = LocalDate.now();
-        paymentData = new ArrayList<String>();
-        filename = 
     }
 
     public double getAmount() {
