@@ -10,7 +10,7 @@ public class TaxCalculator {
     private double fixedCost, flatPprCharge, annualPenalty;
     private String[] Locations;// array for locations and respective charges
     private double[] pValues, locationsCharge, propertyRates;// array for property values and respective charges
-    private ArrayList<String> propertiesFromCSV, paymentsFromCSV;
+    private ArrayList<String> propertiesFromCSV;
 
     // default constructor for TaxCalculator class
     public TaxCalculator() {
@@ -72,7 +72,6 @@ public class TaxCalculator {
         Double[] overdueTaxes = new Double[256];
         String[] property = new String[7];
         propertiesFromCSV = csvReader("src/properties.csv");
-        paymentsFromCSV = csvReader("src/payments.csv");
         for (int i = 0; i < propertiesFromCSV.size() + 1; i++) {
             int h = 0;
             while (j < propertiesFromCSV.size()) {
@@ -112,7 +111,6 @@ public class TaxCalculator {
         Double[] overdueTaxes = new Double[256];
         String[] property = new String[7];
         propertiesFromCSV = csvReader("src/properties.csv");
-        paymentsFromCSV = csvReader("src/payments.csv");
         for (int i = 0; i < propertiesFromCSV.size() + 1; i++) {
             int h = 0;
             while (j < propertiesFromCSV.size()) {
