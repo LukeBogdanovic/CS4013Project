@@ -33,7 +33,7 @@ public class ManagementMenu {
             st = new Statistics();
             while (more) {
                 System.out.println(
-                        "P)roperty tax // O)wners tax // OV)erdue tax // S)tatistics // Investigate impact of changes to tax system // Q)uit ");
+                        "P)roperty tax // O)wners tax // OV)erdue tax // S)tatistics // I)nvestigate impact of changes to tax system // Q)uit ");
                 String command = in.nextLine().toUpperCase();
                 // gets tax paid for a property specified by the management user
                 if (command.equals("P")) {
@@ -143,6 +143,47 @@ public class ManagementMenu {
                     }
 
                 } else if (command.equals("I")) {
+                    double fixedCost, flatPprCharge, annualPenalty;
+                    String[] Locations;
+                    double[] pValues, locationsCharge, propertyRates;
+                    System.out.println("Enter new fixed cost:");
+                    fixedCost = in.nextDouble();
+                    in.nextLine();
+                    System.out.println("Enter new Flat Principal Private Property Charge");
+                    flatPprCharge = in.nextDouble();
+                    in.nextLine();
+                    System.out.println("Enter new annual penalty");
+                    annualPenalty = in.nextDouble();
+                    in.nextLine();
+                    System.out.println("Enter List of Locations in this format: City,Town,Village");
+                    String temp = in.nextLine();
+                    Locations = temp.split(",");
+                    System.out.println(
+                            "Enter the corresponding charges associated with each location in this format: 100,60,40");
+                    temp = in.nextLine();
+                    String[] tempArr = temp.split(",");
+                    locationsCharge = new double[tempArr.length];
+                    for (int i = 0; i < tempArr.length; i++) {
+                        locationsCharge[i] = Double.parseDouble(tempArr[i]);
+                    }
+                    System.out.println("Enter The market value brackets in the format: 0,150000,400000,650000");
+                    temp = in.nextLine();
+                    tempArr = temp.split(",");
+                    pValues = new double[tempArr.length];
+                    for (int i = 0; i < tempArr.length; i++) {
+                        pValues[i] = Double.parseDouble(tempArr[i]);
+                    }
+                    System.out.println(
+                            "Enter the corresponding property rates to those tax brackets in the format: 0, 0.01, 0.02, 0.04");
+                    temp = in.nextLine();
+                    tempArr = temp.split(",");
+                    propertyRates = new double[tempArr.length];
+                    for (int i = 0; i < tempArr.length; i++) {
+                        propertyRates[i] = Double.parseDouble(tempArr[i]);
+                    }
+
+                    tC = new TaxCalculator(fixedCost, flatPprCharge, annualPenalty, Locations, pValues, locationsCharge,
+                            propertyRates);
 
                 }
                 // quits the program
