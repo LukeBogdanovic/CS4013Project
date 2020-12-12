@@ -32,7 +32,8 @@ public class ManagementMenu {
             tC = new TaxCalculator();
             st = new Statistics();
             while (more) {
-                System.out.println("P)roperty tax // O)wners tax // OV)erdue tax // S)tatistics // Q)uit ");
+                System.out.println(
+                        "P)roperty tax // O)wners tax // OV)erdue tax // S)tatistics // Investigate impact of changes to tax system // Q)uit ");
                 String command = in.nextLine().toUpperCase();
                 // gets tax paid for a property specified by the management user
                 if (command.equals("P")) {
@@ -140,6 +141,9 @@ public class ManagementMenu {
                             M = false;
                         }
                     }
+
+                } else if (command.equals("I")) {
+
                 }
                 // quits the program
                 else if (command.equals("Q")) {
