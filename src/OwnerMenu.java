@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public class OwnerMenu {
     private Scanner in;
@@ -14,6 +15,7 @@ public class OwnerMenu {
     private PrintWriter pw;
     private TaxCalculator tC;
     private LocalDate date;
+    private DecimalFormat df = new DecimalFormat("0.00");
 
     // initialises scanner for the CLI menu
     public OwnerMenu() {
@@ -25,16 +27,19 @@ public class OwnerMenu {
         InterfaceSelect iSelect = new InterfaceSelect();
         System.out.println("Are you a new User? Yes//No");
         String newUser = in.nextLine().toUpperCase();
-        if (newUser.equals("YES")) {
-            System.out.println("Enter Username:");
+        if (newUser.equals("YES") || newUser.equals("Y")) {
+            System.out.println("Create Username:");
             String username = in.nextLine();
-            System.out.println("Enter Password");
+            System.out.println("Create Password");
             String password = in.nextLine();
             fw = new FileWriter("src/systemLogins.csv", true);
-            bw = new BufferedWriter(bw);
+            bw = new BufferedWriter(fw);
             pw = new PrintWriter(bw);
             pw.print("\n" + username + "," + password);
+            pw.flush();
+            pw.close();
         }
+        System.out.println("Username and Password are case-sensitive:");
         System.out.println("Enter Username:");
         String username = in.nextLine();
         System.out.println("Enter Password");
@@ -47,22 +52,22 @@ public class OwnerMenu {
                 System.out.println(
                         "P)ay tax // L)ist properties and Tax Due // B)alancing Statements // R)egister properties // Q)uit");
                 String command = in.nextLine().toUpperCase();
-                // allows user to pay the tax due on their property-year check of some sort
-                // needed
+                // allows user to pay ALL the tax due on their property-includes the overdue tax
                 if (command.equals("P")) {
                     System.out.println("What property do you want to pay tax for:\n");
-                    Property p = getPropertie(owner.getProperties());
-                    System.out.println("To be Paid:" + tC.propertyTax(p));// needs extra work done for getting penalty
+                    Property p = getProperty(owner.getProperties());
+                    System.out.println("To be Paid:€" + df.format(tC.overallTax(p)));
                     double toPay = in.nextDouble();
                     in.nextLine();
-                    Payment pay = new Payment(toPay, LocalDate.now(), owner, p, true);
+                    Payment pay = new Payment(toPay, LocalDate.now(), owner, p);
                     writeToPayments("src/payments.csv", pay);
-                    String paid = pay.payTax(p, toPay, tC.propertyTax(p));
-                    System.out.println("Paid:" + paid + " For Property:" + p);
+                    String paid = pay.payTax(p, toPay, tC.overallTax(p));
+                    System.out.println("Paid:€" + paid + " For Property:" + p);
                     owner.removePaidProperty(p);
                     owner.addPaidProperty(p);
                 }
-                // lists the properties and taxes due on each of properties
+                // lists the properties and taxes(per annum and overdue) due on each of
+                // properties
                 else if (command.equals("L")) {
                     System.out.println("List Paid Properties: Y)es//N)o");
                     String com = in.nextLine().toUpperCase();
@@ -72,10 +77,10 @@ public class OwnerMenu {
                         listProperties(owner.getProperties());
                     }
                 }
-                // gets balancing statements based on the Owner or Property as decided by the
-                // user
+                // gets balancing statements for a specific property or all the properties of an
+                // owner
                 else if (command.equals("B")) {
-                    System.out.println("P)roperty Eircode// A)ll properties");
+                    System.out.println("P)roperty Eircode // A)ll properties");
                     String com = in.nextLine().toUpperCase();
                     // property balancing statement
                     if (com.equals("P")) {
@@ -90,10 +95,13 @@ public class OwnerMenu {
                     }
                     // Owner balancing statement
                     else if (com.equals("A")) {
-                        System.out.println(tC.balancingStatement(owner));
+                        System.out.println("Enter the year for query:");
+                        int year = in.nextInt();
+                        in.nextLine();
+                        System.out.println(tC.balancingStatement(owner, year));
                     }
                 }
-                // allows a user to register a property
+                // allows a user to register a property on the current date of login
                 else if (command.equals("R")) {
                     date = LocalDate.now();
                     System.out.println("Address Of Property:");
@@ -126,25 +134,6 @@ public class OwnerMenu {
         iSelect.run();// allows use of software by other users and through gui
     }
 
-    // gets and lists properties for the pay tax function
-    private Property getPropertie(ArrayList<Property> PChoices) {
-        if (PChoices.size() == 0) {
-            return null;
-        }
-        while (true) {
-            char c = 'A';
-            for (Property PChoice : PChoices) {
-                System.out.println(c + ") " + PChoice);
-                c++;
-            }
-            String input = in.nextLine();
-            int n = input.toUpperCase().charAt(0) - 'A';
-            if (0 <= n && n < PChoices.size()) {
-                return PChoices.get(n);
-            }
-        }
-    }
-
     // gets properties and the tax due for payment on properties for list function
     private Property getProperty(ArrayList<Property> PChoices) throws IOException {
         if (PChoices.size() == 0) {
@@ -164,20 +153,20 @@ public class OwnerMenu {
         }
     }
 
+    // gets list of properties that needs to have tax paid for
     private void listProperties(ArrayList<Property> PChoices) throws IOException {
         if (PChoices.size() == 0) {
             return;
         }
         char c = 'A';
         for (Property PChoice : PChoices) {
-            System.out.println(
-                    c + ") " + PChoice + " Taxes Due:" + tC.propertyTax(PChoice) + " " + tC.overdueTax(PChoice));
+            System.out.println(c + ") " + PChoice + " Taxes Due:" + tC.propertyTax(PChoice) + " "
+                    + df.format(tC.overdueTax(PChoice)));
             c++;
         }
     }
 
-    // writes properties resgistered to properties.csv- this is a nice method and I
-    // like it, I don't know if we need to use it though
+    // writes properties resgistered to properties.csv
     private void writeToProperties(String filename, Property p, String name) throws IOException {
         try {
             String path = filename;
@@ -214,24 +203,42 @@ public class OwnerMenu {
         }
     }
 
+    // checks user login and if successful, takes the properties of that user from
+    // csv and places them in properties arraylist in owner- All users are unique
     private boolean userLogin(String username, String password, Owner owner) throws IOException {
         ArrayList<String> systemLogins = new ArrayList<String>();
-        String[] login = new String[2];
+        String[] login = new String[2], propArray = new String[7];
         systemLogins = csvReader("src/systemLogins.csv");
-        int i = 0;
+        ArrayList<String> properties = new ArrayList<String>();
+        properties = csvReader("src/properties.csv");
+        int i = 0, k = 0;
         for (int j = 0; j < systemLogins.size(); j++) {
-            while (i < systemLogins.size()) {
-                login = systemLogins.get(i).split(",");
-                break;
+            for (int h = 0; h < properties.size() + 1; h++) {
+                while (i < systemLogins.size()) {
+                    login = systemLogins.get(i).split(",");
+                    break;
+                }
+                if (login[0].equals(username) && login[1].equals(password)) {
+                    while (i < systemLogins.size()) {
+                        while (k < properties.size()) {
+                            propArray = properties.get(k).split(",");
+                            if (propArray[0].equals(username)) {
+                                Property p = new Property(username, propArray[1], propArray[2], propArray[3],
+                                        Double.parseDouble(propArray[4]), Boolean.parseBoolean(propArray[5]),
+                                        LocalDate.parse(propArray[6]));
+                                owner.addProperty(p);
+                            }
+                            break;
+                        }
+                        if (k == properties.size()) {
+                            return true;
+                        }
+                        break;
+                    }
+                }
+                k++;
             }
             i++;
-            if (login[0].equals(username) && login[1].equals(password)) {
-                ArrayList<Property> properties = new ArrayList<Property>();
-                for (int k = 0; k < properties.size(); i++) {
-
-                }
-                return true;
-            }
         }
         return false;
     }

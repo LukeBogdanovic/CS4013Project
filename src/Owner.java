@@ -24,7 +24,7 @@ public class Owner {
 
     // removes the property from the unpaid properties
     public void removePaidProperty(Property p) {
-        paidProperties.remove(p);
+        properties.remove(p);
     }
 
     // returns the name of an owner

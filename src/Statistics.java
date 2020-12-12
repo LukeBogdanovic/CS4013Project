@@ -6,42 +6,43 @@ public class Statistics {
     private List<String[]> values;
     private List<String> compare1;
     private List<String> compare2;
+    private List<String> hold;
     private BufferedReader br;
 
     // returns the total tax paid for an area specified by the eircode key routing
-    public double totalTaxPaid(String eC, String filename) {
+    public double totalTaxPaid(String eC) {
         Double ttp = 0.0;
+        String path = "src/payments.csv";
         // converts the ArrayList to a 2d Array so you can access all the values
         // indivdually
-        values = getValues(filename);
+        values = getValues(path);
         String[][] arr = new String[values.size()][0];
         values.toArray(arr);
-        String[] three = eC.split(" ");
         for (int i = 0; i < arr.length; i++) {
-            String[] cmp = arr[i][2].split(" ");
-            if (cmp[0].equalsIgnoreCase(three[0])) {
-                ttp = ttp + Double.parseDouble(arr[i][4]);
+            String[] cmp = arr[i][3].split(" ");
+            if (cmp[0].equalsIgnoreCase(eC)) {
+                ttp = ttp + Double.parseDouble(arr[i][5]);
             }
         }
         return ttp;
     }
 
     // returns the average tax paid for an area specified by the eircode key routing
-    public double averageTaxPaid(String eC, String filename) {
-        Double ttp = 0.0, atp = 0.0;
-        // converts the ArrayList to a 2d Array so you can access all the values
-        // indivdually
-        values = getValues(filename);
+    public double averageTaxPaid(String eC) {
+        String path = "src/payments.csv";
+        hold = new ArrayList<String>();
+        values = getValues(path);
         String[][] arr = new String[values.size()][0];
         values.toArray(arr);
-        String[] three = eC.split(" ");
         for (int i = 0; i < arr.length; i++) {
-            String[] cmp = arr[i][2].split(" ");
-            if (cmp[0].equalsIgnoreCase(three[0])) {
-                ttp = ttp + Double.parseDouble(arr[i][4]);
+            String[] cmp = arr[i][3].split(" ");
+            if (cmp[0].equalsIgnoreCase(eC)) {
+                String temp = arr[i][5];
+                hold.add(temp);
             }
         }
-        atp = ttp / arr.length;
+        double ttp = totalTaxPaid(eC);
+        double atp = ttp / hold.size();
         return atp;
     }
 
@@ -53,7 +54,6 @@ public class Statistics {
         String path2 = "src/payments.csv";
         compare1 = new ArrayList<String>();
         compare2 = new ArrayList<String>();
-
         // converts the ArrayList to a 2d Array so you can access all the values
         // indivdually
         values = getValues(path1);
@@ -77,6 +77,24 @@ public class Statistics {
         compare2.retainAll(compare1);
         pot = (compare2.size() * 100) / compare1.size();
         return pot;
+    }
+
+    // Returns how many payments have been made for an area specified by the eircode
+    // key routing
+    public int numberOfPayments(String eC) {
+        String path = "src/payments.csv";
+        hold = new ArrayList<String>();
+        values = getValues(path);
+        String[][] arr = new String[values.size()][0];
+        values.toArray(arr);
+        for (int i = 0; i < arr.length; i++) {
+            String[] cmp = arr[i][3].split(" ");
+            if (cmp[0].equalsIgnoreCase(eC)) {
+                hold.add(arr[i][3]);
+            }
+        }
+        int num = hold.size();
+        return num;
     }
 
     // returns a List of String[] for use by the other methods of this class
