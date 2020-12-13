@@ -185,7 +185,7 @@ public class GraphicalManagementMenu extends Application {
                 // scene 8
                 else if (newValue.getValue().equalsIgnoreCase("List Paid Properties")) {
                     try {
-                        getProperty(owner.getPaidProperties());
+                        getPaidProperties(owner.getName());
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -193,7 +193,7 @@ public class GraphicalManagementMenu extends Application {
                 // scene 9
                 else if (newValue.getValue().equalsIgnoreCase("List Unpaid properties")) {
                     try {
-                        listProperties(owner.getProperties());
+                        getUnPaidProperties(owner.getName());
                     } catch (IOException e1) {
                         e1.printStackTrace();
                     }
@@ -290,25 +290,53 @@ public class GraphicalManagementMenu extends Application {
                     GridPane.setConstraints(flatPprChargeInput, 1, 1);
 
                     Label annualPenaltyLabel = new Label("Enter new annual penalty");
-                    GridPane.setConstraints(annualPenaltyLabel, 0, 1);
+                    GridPane.setConstraints(annualPenaltyLabel, 0, 2);
 
                     TextField annualPenaltyInput = new TextField();
                     annualPenaltyInput.setPromptText("0.07");
-                    GridPane.setConstraints(annualPenaltyInput, 1, 1);
+                    GridPane.setConstraints(annualPenaltyInput, 1, 2);
 
                     Label locationsLabel = new Label("Enter Locations in the format as follows");
-                    GridPane.setConstraints(locationsLabel, 0, 1);
+                    GridPane.setConstraints(locationsLabel, 0, 3);
 
                     TextField locationsInput = new TextField();
                     locationsInput.setPromptText("City,Large Town,Small Town,Village");
-                    GridPane.setConstraints(locationsInput, 1, 1);
+                    GridPane.setConstraints(locationsInput, 1, 3);
 
-                    Label pValuesLabel = new Label("Enter new annual penalty");
-                    GridPane.setConstraints(pValuesLabel, 0, 1);
+                    Label locationsChargeLabel = new Label("Enter new annual penalty");
+                    GridPane.setConstraints(locationsChargeLabel, 0, 4);
+
+                    TextField locationsChargeInput = new TextField();
+                    locationsChargeInput.setPromptText("0.07");
+                    GridPane.setConstraints(locationsChargeInput, 1, 4);
+
+                    Label pValuesLabel = new Label("Enter Property value ranges in the following format");
+                    GridPane.setConstraints(pValuesLabel, 0, 5);
 
                     TextField pValuesInput = new TextField();
-                    pValuesInput.setPromptText("0.07");
-                    GridPane.setConstraints(pValuesInput, 1, 1);
+                    pValuesInput.setPromptText("0,150000,400000,650000");
+                    GridPane.setConstraints(pValuesInput, 1, 5);
+
+                    Label propertyRatesLabel = new Label("Enter corresponding Property Rates as follows");
+                    GridPane.setConstraints(propertyRatesLabel, 0, 6);
+
+                    TextField propertyRatesInput = new TextField();
+                    propertyRatesInput.setPromptText("0,0.01,0.02,0.04");
+                    GridPane.setConstraints(propertyRatesInput, 1, 6);
+
+                    Button dataEnter = new Button("Enter");
+                    GridPane.setConstraints(dataEnter, 1, 7);
+
+                    GridPane scene11Layout = new GridPane();
+                    scene11Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene11Layout.setVgap(8);
+                    scene11Layout.setHgap(10);
+
+                    scene11Layout.getChildren().addAll(fixedCostLabel, fixedCostInput, flatPprChargeLabel,
+                            flatPprChargeInput, annualPenaltyLabel, annualPenaltyInput, locationsLabel, locationsInput,
+                            pValuesLabel, pValuesInput, propertyRatesLabel, propertyRatesInput, dataEnter);
+                    Scene scene11 = new Scene(scene11Layout, 600, 500);
+                    window.setScene(scene11);
 
                 }
                 // scene 12 works
@@ -841,6 +869,22 @@ public class GraphicalManagementMenu extends Application {
         }
     }
 
+    private ArrayList<String> getPaidProperties(String owner) throws IOException {
+        ArrayList<String> properties = new ArrayList<String>();
+        ArrayList<String> payments = new ArrayList<String>();
+        properties = csvReader("src/properties.csv");
+        payments = csvReader("src/payments.csv");
+        return payments;
+    }
+
+    private ArrayList<String> getUnPaidProperties(String string) throws IOException {
+        ArrayList<String> properties = new ArrayList<String>();
+        ArrayList<String> payments = new ArrayList<String>();
+        properties = csvReader("src/properties.csv");
+        payments = csvReader("src/payments.csv");
+        return payments;
+    }
+
     // reads the csv files
     private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);
@@ -855,33 +899,6 @@ public class GraphicalManagementMenu extends Application {
             ioe.printStackTrace();
         }
         return attributes;
-    }
-
-    private Property getProperty(ArrayList<Property> PChoices) throws IOException {
-        if (PChoices.size() == 0) {
-            return null;
-        }
-        while (true) {
-            char c = 'A';
-            for (Property PChoice : PChoices) {
-                System.out.println(c + ") " + PChoice);
-                c++;
-            }
-
-        }
-    }
-
-    // gets list of properties that needs to have tax paid for
-    private void listProperties(ArrayList<Property> PChoices) throws IOException {
-        if (PChoices.size() == 0) {
-            return;
-        }
-        char c = 'A';
-        for (Property PChoice : PChoices) {
-            System.out.println(c + ") " + PChoice + " Taxes Due:" + tC.propertyTax(PChoice) + " "
-                    + df.format(tC.overdueTax(PChoice)));
-            c++;
-        }
     }
 
     // produces the Tree for the GUI
