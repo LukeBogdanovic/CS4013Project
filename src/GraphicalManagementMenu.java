@@ -184,12 +184,19 @@ public class GraphicalManagementMenu extends Application {
                 }
                 // scene 8
                 else if (newValue.getValue().equalsIgnoreCase("List Paid Properties")) {
-                    getProperty(owner.getProperties());
+                    try {
+                        getProperty(owner.getPaidProperties());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 // scene 9
                 else if (newValue.getValue().equalsIgnoreCase("List Unpaid properties")) {
-                    Label ListUnpaidLabel = new Label("Enter the Property you want to pay for:");
-                    GridPane.setConstraints(ListUnpaidLabel, 0, 0);
+                    try {
+                        listProperties(owner.getProperties());
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
                 // scene 21
                 else if (newValue.getValue().equalsIgnoreCase("Property Eircode")) {
@@ -289,19 +296,19 @@ public class GraphicalManagementMenu extends Application {
                     annualPenaltyInput.setPromptText("0.07");
                     GridPane.setConstraints(annualPenaltyInput, 1, 1);
 
-                    Label locationsLabel = new Label("Enter Locations as follows");
+                    Label locationsLabel = new Label("Enter Locations in the format as follows");
                     GridPane.setConstraints(locationsLabel, 0, 1);
 
                     TextField locationsInput = new TextField();
-                    locationsInput.setPromptText("0.07");
+                    locationsInput.setPromptText("City,Large Town,Small Town,Village");
                     GridPane.setConstraints(locationsInput, 1, 1);
 
-                    Label annualPenaltyLabel = new Label("Enter new annual penalty");
-                    GridPane.setConstraints(annualPenaltyLabel, 0, 1);
+                    Label pValuesLabel = new Label("Enter new annual penalty");
+                    GridPane.setConstraints(pValuesLabel, 0, 1);
 
-                    TextField annualPenaltyInput = new TextField();
-                    annualPenaltyInput.setPromptText("0.07");
-                    GridPane.setConstraints(annualPenaltyInput, 1, 1);
+                    TextField pValuesInput = new TextField();
+                    pValuesInput.setPromptText("0.07");
+                    GridPane.setConstraints(pValuesInput, 1, 1);
 
                 }
                 // scene 12 works
