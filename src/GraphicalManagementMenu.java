@@ -32,22 +32,33 @@ public class GraphicalManagementMenu extends Application {
     private ArrayList<String> ownerList, properties;
     Stage window;
     TreeView<String> tree1, tree2;
-    String output, ownerName, eC, year;
+    String output, ownerName, eC, year, temp;
     float x;
     double y;
     int k;
     double fixedCost, flatPprCharge, annualPenalty;
-    String[] Locations;
+    String[] Locations, tempArr, tempArr1, tempArr2;
     double[] pValues, locationsCharge, propertyRates;
+    static boolean answer;
+    boolean result;
 
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * @param primaryStage
+     * @throws Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
         window.setTitle("Tax calculator");
+
+        // Scene 1
         GridPane startUp = new GridPane();
         startUp.setPadding(new Insets(10, 10, 10, 10));
         startUp.setVgap(8);
@@ -65,7 +76,7 @@ public class GraphicalManagementMenu extends Application {
         startUp.getChildren().addAll(startupLabel, ownerLogin, managerLogin);
         Scene scene1 = new Scene(startUp, 435, 200);
 
-        // Scene 3
+        // Scene 2
 
         // name label
         Label nameLabel = new Label("Username");
@@ -91,17 +102,17 @@ public class GraphicalManagementMenu extends Application {
         Button loginButton = new Button("Log In");
         GridPane.setConstraints(loginButton, 2, 2);
 
-        GridPane scene3Layout = new GridPane();
-        scene3Layout.setPadding(new Insets(10, 10, 10, 10));
-        scene3Layout.setVgap(8);
-        scene3Layout.setHgap(10);
+        GridPane scene2Layout = new GridPane();
+        scene2Layout.setPadding(new Insets(10, 10, 10, 10));
+        scene2Layout.setVgap(8);
+        scene2Layout.setHgap(10);
 
-        scene3Layout.getChildren().addAll(nameLabel, nameInput, passLabel, passInput, loginButton, newUser);
-        Scene scene3 = new Scene(scene3Layout, 300, 200);
+        scene2Layout.getChildren().addAll(nameLabel, nameInput, passLabel, passInput, loginButton, newUser);
+        Scene scene2 = new Scene(scene2Layout, 450, 300);
 
-        ownerLogin.setOnAction(e -> window.setScene(scene3));
+        ownerLogin.setOnAction(e -> window.setScene(scene2));
 
-        // Scene 2
+        // Scene 3
 
         Label nameLabel2 = new Label("Username");
         GridPane.setConstraints(nameLabel2, 0, 0);
@@ -121,15 +132,15 @@ public class GraphicalManagementMenu extends Application {
         Button loginButton2 = new Button("Log In");
         GridPane.setConstraints(loginButton2, 2, 2);
 
-        GridPane scene2Layout = new GridPane();
-        scene2Layout.setPadding(new Insets(10, 10, 10, 10));
-        scene2Layout.setVgap(8);
-        scene2Layout.setHgap(10);
+        GridPane scene3Layout = new GridPane();
+        scene3Layout.setPadding(new Insets(10, 10, 10, 10));
+        scene3Layout.setVgap(8);
+        scene3Layout.setHgap(10);
 
-        scene2Layout.getChildren().addAll(nameLabel2, nameInput2, passLabel2, passInput2, loginButton2);
-        Scene scene2 = new Scene(scene2Layout, 300, 200);
+        scene3Layout.getChildren().addAll(nameLabel2, nameInput2, passLabel2, passInput2, loginButton2);
+        Scene scene3 = new Scene(scene3Layout, 450, 300);
 
-        managerLogin.setOnAction(e -> window.setScene(scene2));
+        managerLogin.setOnAction(e -> window.setScene(scene3));
 
         window.setScene(scene1);
         window.show();
@@ -168,21 +179,38 @@ public class GraphicalManagementMenu extends Application {
         Scene scene4 = new Scene(layout, 300, 250);
         tree1.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             if (newValue != null) {
-                // scene 6
-                if (newValue.getValue().equalsIgnoreCase("Quit")) {
+                if (newValue.getValue().equalsIgnoreCase("quit")) {
+                    result = displayConfirmBox("Quiting to interface select?",
+                            "Are you sure you wish to return tointerface select?");
+
+                    if (result == true) {
+                        InterfaceSelect iSelect = new InterfaceSelect();
+                        window.close();
+                        try {
+                            iSelect.run();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (result == false) {
+                        window.setScene(scene4);
+                    }
 
                 }
-                // scene 7 Owner Menu-property tax
+                // scene 5 Owner Menu-property tax
                 else if (newValue.getValue().equalsIgnoreCase("Pay Tax")) {
                     Label paymentLabel = new Label("Enter the Property you want to pay for:");
                     GridPane.setConstraints(paymentLabel, 0, 0);
 
                     TextField paymentInput = new TextField();
-                    paymentInput.setPromptText("");
+                    paymentInput.setPromptText("0.0");
                     GridPane.setConstraints(paymentInput, 1, 0);
 
+                    Button paymentEnter = new Button("Enter");
+                    GridPane.setConstraints(paymentEnter, 1, 7);
+
                 }
-                // scene 8
+                // scene 6
                 else if (newValue.getValue().equalsIgnoreCase("List Paid Properties")) {
                     try {
                         getPaidProperties(owner.getName());
@@ -190,7 +218,7 @@ public class GraphicalManagementMenu extends Application {
                         e1.printStackTrace();
                     }
                 }
-                // scene 9
+                // scene 7
                 else if (newValue.getValue().equalsIgnoreCase("List Unpaid properties")) {
                     try {
                         getUnPaidProperties(owner.getName());
@@ -198,20 +226,61 @@ public class GraphicalManagementMenu extends Application {
                         e1.printStackTrace();
                     }
                 }
-                // scene 21
+                // scene 8
                 else if (newValue.getValue().equalsIgnoreCase("Property Eircode")) {
                     Label EircodeLabel = new Label("Enter the Property Eircode for query:");
                     GridPane.setConstraints(EircodeLabel, 0, 0);
+
+                    TextField EircodeInput = new TextField();
+                    EircodeInput.setPromptText("");
+                    GridPane.setConstraints(EircodeInput, 1, 0);
                 }
-                // scene 22
+                // scene 9
                 else if (newValue.getValue().equalsIgnoreCase("All Properties")) {
                     Label AllLabel = new Label("Enter the year for query:");
                     GridPane.setConstraints(AllLabel, 0, 0);
+
+                    TextField AllInput = new TextField();
+                    AllInput.setPromptText("yyyy-mm-dd");
+                    GridPane.setConstraints(AllInput, 1, 0);
                 }
-                // scene 23
+                // scene 10
                 else if (newValue.getValue().equalsIgnoreCase("Register Properties")) {
                     Label RegisterLabel = new Label("Enter the Property you want to register:");
                     GridPane.setConstraints(RegisterLabel, 0, 0);
+
+                    TextField property = new TextField();
+                    property.setPromptText(
+                            "owner,address,Eircode,Location,market value,primary property,date(yyyy-mm-dd)");
+                    GridPane.setConstraints(property, 1, 0);
+
+                    Button propertyEntry = new Button("Enter");
+                    GridPane.setConstraints(propertyEntry, 1, 1);
+
+                    Button exit = new Button("Back To Menu");
+                    GridPane.setConstraints(exit, 2, 1);
+
+                    GridPane scene10Layout = new GridPane();
+                    scene10Layout.getChildren().addAll(RegisterLabel, property, propertyEntry, exit);
+                    Scene scene10 = new Scene(scene10Layout, 450, 300);
+                    window.setScene(scene10);
+
+                    scene10Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene10Layout.setVgap(8);
+                    scene10Layout.setHgap(10);
+
+                    propertyEntry.setOnAction(e -> {
+                        try {
+                            registerProperty(property.getText(), owner.getName());
+
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    });
+
+                    exit.setOnAction(e -> {
+                        window.setScene(scene4);
+                    });
                 }
             }
         });
@@ -227,7 +296,7 @@ public class GraphicalManagementMenu extends Application {
             }
         });
 
-        // scene 5 - Management Menu
+        // scene 11 - Management Menu
         TreeItem<String> managementMenu, overdueTax, statistics;
 
         // root
@@ -263,16 +332,30 @@ public class GraphicalManagementMenu extends Application {
         tree2.setShowRoot(false);
         StackPane layout1 = new StackPane();
         layout1.getChildren().add(tree2);
-        Scene scene5 = new Scene(layout1, 400, 300);
+        Scene scene11 = new Scene(layout1, 400, 300);
         tree2.getSelectionModel().selectedItemProperty().addListener((v, oldValue, newValue) -> {
             if (newValue != null) {
                 System.out.println(newValue);
                 // scene 10
                 if (newValue.getValue().equalsIgnoreCase("quit")) {
-                    InterfaceSelect iSelect = new InterfaceSelect();
+                    result = displayConfirmBox("Quiting to interface select?",
+                            "Are you sure you wish to return tointerface select?");
+
+                    if (result == true) {
+                        InterfaceSelect iSelect = new InterfaceSelect();
+                        window.close();
+                        try {
+                            iSelect.run();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if (result == false) {
+                        window.setScene(scene11);
+                    }
 
                 }
-                // scene 11
+                // scene 12
                 else if (newValue.getValue().equalsIgnoreCase("Investigate the impact of changes on tax system")) {
 
                     Label fixedCostLabel = new Label("Enter new fixed Cost");
@@ -300,14 +383,14 @@ public class GraphicalManagementMenu extends Application {
                     GridPane.setConstraints(locationsLabel, 0, 3);
 
                     TextField locationsInput = new TextField();
-                    locationsInput.setPromptText("City,Large Town,Small Town,Village");
+                    locationsInput.setPromptText("CountrySide,Village,Small Town,Large Town,City");
                     GridPane.setConstraints(locationsInput, 1, 3);
 
-                    Label locationsChargeLabel = new Label("Enter new annual penalty");
+                    Label locationsChargeLabel = new Label("Enter new Location charges");
                     GridPane.setConstraints(locationsChargeLabel, 0, 4);
 
                     TextField locationsChargeInput = new TextField();
-                    locationsChargeInput.setPromptText("0.07");
+                    locationsChargeInput.setPromptText(" 25,50,60,80,100");
                     GridPane.setConstraints(locationsChargeInput, 1, 4);
 
                     Label pValuesLabel = new Label("Enter Property value ranges in the following format");
@@ -327,64 +410,52 @@ public class GraphicalManagementMenu extends Application {
                     Button dataEnter = new Button("Enter");
                     GridPane.setConstraints(dataEnter, 1, 7);
 
-                    GridPane scene11Layout = new GridPane();
-                    scene11Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene11Layout.setVgap(8);
-                    scene11Layout.setHgap(10);
-
-                    scene11Layout.getChildren().addAll(fixedCostLabel, fixedCostInput, flatPprChargeLabel,
-                            flatPprChargeInput, annualPenaltyLabel, annualPenaltyInput, locationsLabel, locationsInput,
-                            pValuesLabel, pValuesInput, propertyRatesLabel, propertyRatesInput, dataEnter);
-                    Scene scene11 = new Scene(scene11Layout, 600, 500);
-                    window.setScene(scene11);
-
-                }
-                // scene 12 works
-                else if (newValue.getValue().equalsIgnoreCase("Number of Taxes Paid")) {
-                    Label routingLabel = new Label("Enter the routing code for the Eircode:");
-                    GridPane.setConstraints(routingLabel, 0, 0);
-
-                    TextField routingInput = new TextField();
-                    routingInput.setPromptText("xxx");
-                    GridPane.setConstraints(routingInput, 1, 0);
-
                     GridPane scene12Layout = new GridPane();
                     scene12Layout.setPadding(new Insets(10, 10, 10, 10));
                     scene12Layout.setVgap(8);
                     scene12Layout.setHgap(10);
 
-                    Button routingEnter = new Button("Enter");
-                    GridPane.setConstraints(routingEnter, 1, 1);
-
-                    scene12Layout.getChildren().addAll(routingEnter, routingInput, routingLabel);
-                    Scene scene12 = new Scene(scene12Layout, 300, 200);
+                    scene12Layout.getChildren().addAll(fixedCostLabel, fixedCostInput, flatPprChargeLabel,
+                            flatPprChargeInput, annualPenaltyLabel, annualPenaltyInput, locationsLabel, locationsInput,
+                            locationsChargeLabel, locationsChargeInput, pValuesLabel, pValuesInput, propertyRatesLabel,
+                            propertyRatesInput, dataEnter);
+                    Scene scene12 = new Scene(scene12Layout, 500, 300);
                     window.setScene(scene12);
 
-                    routingEnter.setOnAction(e -> {
-                        try {
-                            k = st.numberOfPayments(routingInput.getText());
-                        } catch (Exception e1) {
-                            e1.printStackTrace();
+                    dataEnter.setOnAction(e -> {
+                        fixedCost = Double.parseDouble(fixedCostInput.getText());
+                        flatPprCharge = Double.parseDouble(flatPprChargeInput.getText());
+                        annualPenalty = Double.parseDouble(annualPenaltyInput.getText());
+                        temp = locationsInput.getText();
+                        Locations = temp.split(",");
+
+                        temp = locationsChargeInput.getText();
+                        tempArr = temp.split(",");
+                        locationsCharge = new double[tempArr.length];
+                        for (k = 0; k < tempArr.length; k++) {
+                            locationsCharge[k] = Double.parseDouble(tempArr[k]);
                         }
-                        Label outputPercentageLabel = new Label("The Number of Properties is:" + k);
-                        GridPane.setConstraints(outputPercentageLabel, 0, 0);
 
-                        Button exit = new Button("Back To Menu");
-                        GridPane.setConstraints(exit, 1, 1);
+                        temp = pValuesInput.getText();
+                        tempArr1 = temp.split(",");
+                        for (k = 0; k < tempArr1.length; k++) {
+                            pValues[k] = Double.parseDouble(tempArr1[k]);
+                        }
 
-                        GridPane scenekmsLayout = new GridPane();
-                        scenekmsLayout.setPadding(new Insets(10, 10, 10, 10));
-                        scenekmsLayout.setVgap(8);
-                        scenekmsLayout.setHgap(10);
+                        temp = propertyRatesInput.getText();
+                        tempArr2 = temp.split(",");
+                        for (k = 0; k < tempArr2.length; k++) {
+                            propertyRates[k] = Double.parseDouble(tempArr2[k]);
 
-                        scenekmsLayout.getChildren().addAll(outputPercentageLabel, exit);
-                        Scene scenekms = new Scene(scenekmsLayout, 300, 200);
-                        window.setScene(scenekms);
-                        exit.setOnAction(f -> window.setScene(scene5));
+                        }
+                        tC = new TaxCalculator(fixedCost, flatPprCharge, annualPenalty, Locations, pValues,
+                                locationsCharge, propertyRates);// creates a new taxcalculator for comparing the tax
+                                                                // statistics
                     });
+
                 }
-                // scene13 WORKS
-                else if (newValue.getValue().equalsIgnoreCase("Percentage of Taxes Paid")) {
+                // scene 13 / 14 works
+                else if (newValue.getValue().equalsIgnoreCase("Number of Taxes Paid")) {
                     Label routingLabel = new Label("Enter the routing code for the Eircode:");
                     GridPane.setConstraints(routingLabel, 0, 0);
 
@@ -401,79 +472,34 @@ public class GraphicalManagementMenu extends Application {
                     GridPane.setConstraints(routingEnter, 1, 1);
 
                     scene13Layout.getChildren().addAll(routingEnter, routingInput, routingLabel);
-                    Scene scene13 = new Scene(scene13Layout, 300, 200);
+                    Scene scene13 = new Scene(scene13Layout, 450, 300);
                     window.setScene(scene13);
 
                     routingEnter.setOnAction(e -> {
                         try {
-                            x = st.percentageOfTaxesPaid(routingInput.getText());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                            k = st.numberOfPayments(routingInput.getText());
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
                         }
-                        Label outputPercentageLabel = new Label("The percentage is" + x);
+                        Label outputPercentageLabel = new Label("The Number of Properties is:" + k);
                         GridPane.setConstraints(outputPercentageLabel, 0, 0);
 
                         Button exit = new Button("Back To Menu");
                         GridPane.setConstraints(exit, 1, 1);
 
-                        GridPane scenekmsLayout = new GridPane();
-                        scenekmsLayout.setPadding(new Insets(10, 10, 10, 10));
-                        scenekmsLayout.setVgap(8);
-                        scenekmsLayout.setHgap(10);
+                        GridPane scene14Layout = new GridPane();
+                        scene14Layout.setPadding(new Insets(10, 10, 10, 10));
+                        scene14Layout.setVgap(8);
+                        scene14Layout.setHgap(10);
 
-                        scenekmsLayout.getChildren().addAll(outputPercentageLabel, exit);
-                        Scene scenekms = new Scene(scenekmsLayout, 300, 200);
-                        window.setScene(scenekms);
-                        exit.setOnAction(f -> window.setScene(scene5));
-                    });
-
-                }
-                // scene 14 WORKS
-                else if (newValue.getValue().equalsIgnoreCase("Average Tax Paid")) {
-                    Label routingLabel = new Label("Enter the routing code for the Eircode:");
-                    GridPane.setConstraints(routingLabel, 0, 0);
-
-                    TextField routingInput = new TextField();
-                    routingInput.setPromptText("xxx");
-                    GridPane.setConstraints(routingInput, 1, 0);
-
-                    GridPane scene14Layout = new GridPane();
-                    scene14Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene14Layout.setVgap(8);
-                    scene14Layout.setHgap(10);
-
-                    Button routingEnter = new Button("Enter");
-                    GridPane.setConstraints(routingEnter, 1, 1);
-
-                    scene14Layout.getChildren().addAll(routingEnter, routingInput, routingLabel);
-                    Scene scene14 = new Scene(scene14Layout, 300, 200);
-                    window.setScene(scene14);
-
-                    routingEnter.setOnAction(e -> {
-                        try {
-                            y = st.averageTaxPaid(routingInput.getText());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                        Label outputPercentageLabel = new Label("The Average Tax for the Eircode key is:" + y);
-                        GridPane.setConstraints(outputPercentageLabel, 0, 0);
-
-                        Button exit = new Button("Back To Menu");
-                        GridPane.setConstraints(exit, 1, 1);
-
-                        GridPane scenekmsLayout = new GridPane();
-                        scenekmsLayout.setPadding(new Insets(10, 10, 10, 10));
-                        scenekmsLayout.setVgap(8);
-                        scenekmsLayout.setHgap(10);
-
-                        scenekmsLayout.getChildren().addAll(outputPercentageLabel, exit);
-                        Scene scenekms = new Scene(scenekmsLayout, 300, 200);
-                        window.setScene(scenekms);
-                        exit.setOnAction(f -> window.setScene(scene5));
+                        scene14Layout.getChildren().addAll(outputPercentageLabel, exit);
+                        Scene scene14 = new Scene(scene14Layout, 450, 300);
+                        window.setScene(scene14);
+                        exit.setOnAction(f -> window.setScene(scene11));
                     });
                 }
-                // scene 15 WORKS
-                else if (newValue.getValue().equalsIgnoreCase("Total Tax Paid")) {
+                // scene 15 / 16 WORKS
+                else if (newValue.getValue().equalsIgnoreCase("Percentage of Taxes Paid")) {
                     Label routingLabel = new Label("Enter the routing code for the Eircode:");
                     GridPane.setConstraints(routingLabel, 0, 0);
 
@@ -490,8 +516,97 @@ public class GraphicalManagementMenu extends Application {
                     GridPane.setConstraints(routingEnter, 1, 1);
 
                     scene15Layout.getChildren().addAll(routingEnter, routingInput, routingLabel);
-                    Scene scene15 = new Scene(scene15Layout, 300, 200);
+                    Scene scene15 = new Scene(scene15Layout, 450, 300);
                     window.setScene(scene15);
+
+                    routingEnter.setOnAction(e -> {
+                        try {
+                            x = st.percentageOfTaxesPaid(routingInput.getText());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        Label outputPercentageLabel = new Label("The percentage is" + x);
+                        GridPane.setConstraints(outputPercentageLabel, 0, 0);
+
+                        Button exit = new Button("Back To Menu");
+                        GridPane.setConstraints(exit, 1, 1);
+
+                        GridPane scene16Layout = new GridPane();
+                        scene16Layout.setPadding(new Insets(10, 10, 10, 10));
+                        scene16Layout.setVgap(8);
+                        scene16Layout.setHgap(10);
+
+                        scene16Layout.getChildren().addAll(outputPercentageLabel, exit);
+                        Scene scene16 = new Scene(scene16Layout, 450, 300);
+                        window.setScene(scene16);
+                        exit.setOnAction(f -> window.setScene(scene11));
+                    });
+
+                }
+                // scene 17 / 18 WORKS
+                else if (newValue.getValue().equalsIgnoreCase("Average Tax Paid")) {
+                    Label routingLabel = new Label("Enter the routing code for the Eircode:");
+                    GridPane.setConstraints(routingLabel, 0, 0);
+
+                    TextField routingInput = new TextField();
+                    routingInput.setPromptText("xxx");
+                    GridPane.setConstraints(routingInput, 1, 0);
+
+                    GridPane scene17Layout = new GridPane();
+                    scene17Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene17Layout.setVgap(8);
+                    scene17Layout.setHgap(10);
+
+                    Button routingEnter = new Button("Enter");
+                    GridPane.setConstraints(routingEnter, 1, 1);
+
+                    scene17Layout.getChildren().addAll(routingEnter, routingInput, routingLabel);
+                    Scene scene17 = new Scene(scene17Layout, 450, 300);
+                    window.setScene(scene17);
+
+                    routingEnter.setOnAction(e -> {
+                        try {
+                            y = st.averageTaxPaid(routingInput.getText());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        Label outputPercentageLabel = new Label("The Average Tax for the Eircode key is:" + y);
+                        GridPane.setConstraints(outputPercentageLabel, 0, 0);
+
+                        Button exit = new Button("Back To Menu");
+                        GridPane.setConstraints(exit, 1, 1);
+
+                        GridPane scene18Layout = new GridPane();
+                        scene18Layout.setPadding(new Insets(10, 10, 10, 10));
+                        scene18Layout.setVgap(8);
+                        scene18Layout.setHgap(10);
+
+                        scene18Layout.getChildren().addAll(outputPercentageLabel, exit);
+                        Scene scene18 = new Scene(scene18Layout, 450, 300);
+                        window.setScene(scene18);
+                        exit.setOnAction(f -> window.setScene(scene11));
+                    });
+                }
+                // scene 19 / 20 WORKS
+                else if (newValue.getValue().equalsIgnoreCase("Total Tax Paid")) {
+                    Label routingLabel = new Label("Enter the routing code for the Eircode:");
+                    GridPane.setConstraints(routingLabel, 0, 0);
+
+                    TextField routingInput = new TextField();
+                    routingInput.setPromptText("xxx");
+                    GridPane.setConstraints(routingInput, 1, 0);
+
+                    GridPane scene19Layout = new GridPane();
+                    scene19Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene19Layout.setVgap(8);
+                    scene19Layout.setHgap(10);
+
+                    Button routingEnter = new Button("Enter");
+                    GridPane.setConstraints(routingEnter, 1, 1);
+
+                    scene19Layout.getChildren().addAll(routingEnter, routingInput, routingLabel);
+                    Scene scene19 = new Scene(scene19Layout, 450, 300);
+                    window.setScene(scene19);
 
                     routingEnter.setOnAction(e -> {
                         try {
@@ -505,18 +620,18 @@ public class GraphicalManagementMenu extends Application {
                         Button exit = new Button("Back To Menu");
                         GridPane.setConstraints(exit, 1, 1);
 
-                        GridPane scenekmsLayout = new GridPane();
-                        scenekmsLayout.setPadding(new Insets(10, 10, 10, 10));
-                        scenekmsLayout.setVgap(8);
-                        scenekmsLayout.setHgap(10);
+                        GridPane scene20Layout = new GridPane();
+                        scene20Layout.setPadding(new Insets(10, 10, 10, 10));
+                        scene20Layout.setVgap(8);
+                        scene20Layout.setHgap(10);
 
-                        scenekmsLayout.getChildren().addAll(outputPercentageLabel, exit);
-                        Scene scenekms = new Scene(scenekmsLayout, 300, 200);
-                        window.setScene(scenekms);
-                        exit.setOnAction(f -> window.setScene(scene5));
+                        scene20Layout.getChildren().addAll(outputPercentageLabel, exit);
+                        Scene scene20 = new Scene(scene20Layout, 450, 300);
+                        window.setScene(scene20);
+                        exit.setOnAction(f -> window.setScene(scene11));
                     });
                 }
-                // scene 16-
+                // scene 21-
                 else if (newValue.getValue().equalsIgnoreCase("Query a year")) {
                     Label yearLabel = new Label("Enter the Year");
                     GridPane.setConstraints(yearLabel, 0, 0);
@@ -525,19 +640,19 @@ public class GraphicalManagementMenu extends Application {
                     yearInput.setPromptText("1954");
                     GridPane.setConstraints(yearInput, 1, 0);
 
-                    GridPane scene16Layout = new GridPane();
-                    scene16Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene16Layout.setVgap(8);
-                    scene16Layout.setHgap(10);
+                    GridPane scene21Layout = new GridPane();
+                    scene21Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene21Layout.setVgap(8);
+                    scene21Layout.setHgap(10);
 
                     Button yearEnter = new Button("Enter");
                     GridPane.setConstraints(yearEnter, 1, 1);
 
-                    scene16Layout.getChildren().addAll(yearLabel, yearInput, yearEnter);
-                    Scene scene16 = new Scene(scene16Layout, 300, 200);
-                    window.setScene(scene16);
+                    scene21Layout.getChildren().addAll(yearLabel, yearInput, yearEnter);
+                    Scene scene21 = new Scene(scene21Layout, 450, 300);
+                    window.setScene(scene21);
                 }
-                // scene 17-
+                // scene 22 / 23- gets overdue tax for a Year and Area
                 else if (newValue.getValue().equalsIgnoreCase("Query an Area and Year")) {
                     Label areaLabel = new Label("Enter the area's Eircode key");
                     GridPane.setConstraints(areaLabel, 0, 0);
@@ -553,22 +668,22 @@ public class GraphicalManagementMenu extends Application {
                     yearInput.setPromptText("1954");
                     GridPane.setConstraints(yearInput, 1, 1);
 
-                    GridPane scene17Layout = new GridPane();
-                    scene17Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene17Layout.setVgap(8);
-                    scene17Layout.setHgap(10);
+                    GridPane scene22Layout = new GridPane();
+                    scene22Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene22Layout.setVgap(8);
+                    scene22Layout.setHgap(10);
 
                     Button dataEnter = new Button("Enter");
                     GridPane.setConstraints(dataEnter, 1, 2);
 
-                    scene17Layout.getChildren().addAll(areaInput, yearLabel, yearInput, areaLabel, dataEnter);
-                    Scene scene17 = new Scene(scene17Layout, 300, 200);
-                    window.setScene(scene17);
+                    scene22Layout.getChildren().addAll(areaInput, yearLabel, yearInput, areaLabel, dataEnter);
+                    Scene scene22 = new Scene(scene22Layout, 450, 300);
+                    window.setScene(scene22);
 
-                    GridPane scene31Layout = new GridPane();
-                    scene31Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene31Layout.setVgap(8);
-                    scene31Layout.setHgap(10);
+                    GridPane scene23Layout = new GridPane();
+                    scene23Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene23Layout.setVgap(8);
+                    scene23Layout.setHgap(10);
 
                     dataEnter.setOnAction(e -> {
                         try {
@@ -582,15 +697,15 @@ public class GraphicalManagementMenu extends Application {
                         Button backToMenu = new Button("Back To Menu");
                         GridPane.setConstraints(backToMenu, 1, 1);
 
-                        scene31Layout.getChildren().addAll(overdueInfo, backToMenu);
-                        Scene scene31 = new Scene(scene31Layout, 300, 200);
-                        window.setScene(scene31);
-                        backToMenu.setOnAction(f -> window.setScene(scene5));
+                        scene23Layout.getChildren().addAll(overdueInfo, backToMenu);
+                        Scene scene23 = new Scene(scene23Layout, 450, 300);
+                        window.setScene(scene23);
+                        backToMenu.setOnAction(f -> window.setScene(scene11));
                     });
 
                 }
 
-                // Scene 18 THIS WORKS
+                // Scene 24 / 25 THIS WORKS
                 else if (newValue.getValue().equalsIgnoreCase("Owners Tax")) {
                     Label ownerLabel = new Label("Enter the Owners name:");
                     GridPane.setConstraints(ownerLabel, 0, 0);
@@ -599,22 +714,22 @@ public class GraphicalManagementMenu extends Application {
                     ownerInput.setPromptText("John Smith");
                     GridPane.setConstraints(ownerInput, 1, 0);
 
-                    GridPane scene18Layout = new GridPane();
-                    scene18Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene18Layout.setVgap(8);
-                    scene18Layout.setHgap(10);
+                    GridPane scene24Layout = new GridPane();
+                    scene24Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene24Layout.setVgap(8);
+                    scene24Layout.setHgap(10);
 
                     Button ownerEnter = new Button("Enter");
                     GridPane.setConstraints(ownerEnter, 1, 1);
 
-                    scene18Layout.getChildren().addAll(ownerLabel, ownerInput, ownerEnter);
-                    Scene scene18 = new Scene(scene18Layout, 300, 200);
-                    window.setScene(scene18);
+                    scene24Layout.getChildren().addAll(ownerLabel, ownerInput, ownerEnter);
+                    Scene scene24 = new Scene(scene24Layout, 450, 300);
+                    window.setScene(scene24);
 
-                    GridPane scene30Layout = new GridPane();
-                    scene30Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene30Layout.setVgap(8);
-                    scene30Layout.setHgap(10);
+                    GridPane scene25Layout = new GridPane();
+                    scene25Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene25Layout.setVgap(8);
+                    scene25Layout.setHgap(10);
 
                     ownerEnter.setOnAction(e -> {
                         try {
@@ -629,14 +744,14 @@ public class GraphicalManagementMenu extends Application {
                         Button backToMenu = new Button("Back To Menu");
                         GridPane.setConstraints(backToMenu, 1, 1);
 
-                        scene30Layout.getChildren().addAll(ownerInfo, backToMenu);
-                        Scene scene30 = new Scene(scene30Layout, 300, 200);
-                        window.setScene(scene30);
-                        backToMenu.setOnAction(f -> window.setScene(scene5));
+                        scene25Layout.getChildren().addAll(ownerInfo, backToMenu);
+                        Scene scene25 = new Scene(scene25Layout, 450, 300);
+                        window.setScene(scene25);
+                        backToMenu.setOnAction(f -> window.setScene(scene11));
 
                     });
                 }
-                // scene 19 works
+                // scene 26 / 27 works
                 else if (newValue.getValue().equalsIgnoreCase("Property Tax")) {
                     Label propertyLabel = new Label("Enter the eircode of the property");
                     GridPane.setConstraints(propertyLabel, 0, 0);
@@ -645,21 +760,21 @@ public class GraphicalManagementMenu extends Application {
                     eirInput.setPromptText("Eircode");
                     GridPane.setConstraints(eirInput, 1, 0);
 
-                    GridPane scene19Layout = new GridPane();
-                    scene19Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene19Layout.setVgap(8);
-                    scene19Layout.setHgap(10);
+                    GridPane scene26Layout = new GridPane();
+                    scene26Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene26Layout.setVgap(8);
+                    scene26Layout.setHgap(10);
 
                     Button eirEnter = new Button("Enter");
                     GridPane.setConstraints(eirEnter, 1, 1);
-                    scene19Layout.getChildren().addAll(propertyLabel, eirInput, eirEnter);
-                    Scene scene19 = new Scene(scene19Layout, 300, 200);
-                    window.setScene(scene19);
+                    scene26Layout.getChildren().addAll(propertyLabel, eirInput, eirEnter);
+                    Scene scene26 = new Scene(scene26Layout, 450, 300);
+                    window.setScene(scene26);
 
-                    GridPane scene20Layout = new GridPane();
-                    scene20Layout.setPadding(new Insets(10, 10, 10, 10));
-                    scene20Layout.setVgap(8);
-                    scene20Layout.setHgap(10);
+                    GridPane scene27Layout = new GridPane();
+                    scene27Layout.setPadding(new Insets(10, 10, 10, 10));
+                    scene27Layout.setVgap(8);
+                    scene27Layout.setHgap(10);
 
                     eirEnter.setOnAction(e -> {
                         try {
@@ -673,11 +788,11 @@ public class GraphicalManagementMenu extends Application {
 
                         Button backToMenu = new Button("Back To Menu");
                         GridPane.setConstraints(backToMenu, 1, 1);
-                        backToMenu.setOnAction(f -> window.setScene(scene5));
+                        backToMenu.setOnAction(f -> window.setScene(scene11));
 
-                        scene20Layout.getChildren().addAll(propertyInfo, backToMenu);
-                        Scene scene20 = new Scene(scene20Layout, 300, 200);
-                        window.setScene(scene20);
+                        scene27Layout.getChildren().addAll(propertyInfo, backToMenu);
+                        Scene scene27 = new Scene(scene27Layout, 450, 300);
+                        window.setScene(scene27);
                         System.out.println(eirInput.getText());
 
                     });
@@ -688,22 +803,18 @@ public class GraphicalManagementMenu extends Application {
         loginButton2.setOnAction(e -> {
             if (nameInput2.getText().equalsIgnoreCase("MANAGER") && passInput2.getText().equalsIgnoreCase("password")) {
                 System.out.println("login success");
-                window.setScene(scene5);
+                window.setScene(scene11);
             }
         });
 
-        // scene 6 Owner Menu-property tax
-
-        // scene 7 Owner Menu-List Properties
-
-        // scene 8 Owner Menu-Balancing Statements
-
-        // scene 9 Owner Menu-Register Property
-
-        // scene 10 Owner Menu-Quit
-
     }
 
+    /**
+     * @param text
+     * @param p
+     * @return String
+     * @throws IOException
+     */
     // payment function for owners
     private String payment(String text, Property p) throws IOException {
         String[] textArray = text.split(" ");
@@ -714,6 +825,11 @@ public class GraphicalManagementMenu extends Application {
         return "Paid:" + paid + " For Property:" + p;
     }
 
+    /**
+     * @param property
+     * @param name
+     * @throws IOException
+     */
     // registers property for owner menu
     private void registerProperty(String property, String name) throws IOException {
         String[] propArray = property.split(",");
@@ -722,6 +838,11 @@ public class GraphicalManagementMenu extends Application {
         writeToProperties("src/properties.csv", p, name);
     }
 
+    /**
+     * @param eircode
+     * @return String
+     * @throws IOException
+     */
     // gets the propertyTax for managament menu and owner menu
     private String propertyTax(String eircode) throws IOException {
         properties = new ArrayList<String>();
@@ -739,6 +860,11 @@ public class GraphicalManagementMenu extends Application {
         return "NOpe";
     }
 
+    /**
+     * @param ownerName
+     * @return String
+     * @throws IOException
+     */
     // gets ownerTax for management menu
     private String ownersTax(String ownerName) throws IOException {
         ownerList = new ArrayList<String>();
@@ -770,12 +896,23 @@ public class GraphicalManagementMenu extends Application {
         return "All the taxes for this owner equals:" + df.format(taxes);
     }
 
+    /**
+     * @param y
+     * @return String
+     * @throws IOException
+     */
     // gets the overdue tax for a year
     private String overdueTax(String y) throws IOException {
         LocalDate year = LocalDate.parse(y);
         return (df.format(tC.overdueTax(year)));
     }
 
+    /**
+     * @param y
+     * @param eC
+     * @return String
+     * @throws IOException
+     */
     // gets the overdue tax for an area and year
     private String overdueTax(String y, String eC) throws IOException {
         LocalDate year = LocalDate.parse(y);
@@ -783,6 +920,13 @@ public class GraphicalManagementMenu extends Application {
         return (df.format(tC.overdueTax(year, key)));
     }
 
+    /**
+     * @param username
+     * @param password
+     * @param newuser
+     * @return boolean
+     * @throws IOException
+     */
     // login for users and checks if the user is a newuser
     private boolean userLogin(String username, String password, CheckBox newuser) throws IOException {
         owner = new Owner(username);
@@ -833,6 +977,10 @@ public class GraphicalManagementMenu extends Application {
         }
     }
 
+    /**
+     * @param filename
+     * @param pay
+     */
     // writes the payments to payments.csv file
     private void writeToPayments(String filename, Payment pay) {
         try {
@@ -851,6 +999,12 @@ public class GraphicalManagementMenu extends Application {
         }
     }
 
+    /**
+     * @param filename
+     * @param p
+     * @param name
+     * @throws IOException
+     */
     // writes the property to the properties.csv file
     private void writeToProperties(String filename, Property p, String name) throws IOException {
         try {
@@ -869,22 +1023,55 @@ public class GraphicalManagementMenu extends Application {
         }
     }
 
+    /**
+     * @param owner
+     * @return ArrayList<String>
+     * @throws IOException
+     */
     private ArrayList<String> getPaidProperties(String owner) throws IOException {
+        ArrayList<String> fin = new ArrayList<String>();
         ArrayList<String> properties = new ArrayList<String>();
         ArrayList<String> payments = new ArrayList<String>();
+        String[] payment, property;
         properties = csvReader("src/properties.csv");
         payments = csvReader("src/payments.csv");
-        return payments;
+        for (int i = 0; i < properties.size(); i++) {
+            property = properties.get(i).split(",");
+            payment = payments.get(i).split(",");
+            if (property[0].equalsIgnoreCase(owner) && payment[0].equalsIgnoreCase(owner)) {
+                fin.add(properties.get(i));
+            }
+        }
+        return fin;
     }
 
-    private ArrayList<String> getUnPaidProperties(String string) throws IOException {
+    /**
+     * @param owner
+     * @return ArrayList<String>
+     * @throws IOException
+     */
+    private ArrayList<String> getUnPaidProperties(String owner) throws IOException {
+        ArrayList<String> fin = new ArrayList<String>();
         ArrayList<String> properties = new ArrayList<String>();
         ArrayList<String> payments = new ArrayList<String>();
+        String[] payment, property;
         properties = csvReader("src/properties.csv");
         payments = csvReader("src/payments.csv");
-        return payments;
+        for (int i = 0; i < properties.size(); i++) {
+            property = properties.get(i).split(",");
+            payment = payments.get(i).split(",");
+            if (property[0].equalsIgnoreCase(owner) && payment[0] != owner) {
+                fin.add(properties.get(i));
+            }
+        }
+        return fin;
     }
 
+    /**
+     * @param filename
+     * @return ArrayList<String>
+     * @throws IOException
+     */
     // reads the csv files
     private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);
@@ -901,6 +1088,11 @@ public class GraphicalManagementMenu extends Application {
         return attributes;
     }
 
+    /**
+     * @param title
+     * @param parent
+     * @return TreeItem<String>
+     */
     // produces the Tree for the GUI
     public static TreeItem<String> makeBranch(String title, TreeItem<String> parent) {
         TreeItem<String> item = new TreeItem<>(title);
@@ -908,4 +1100,42 @@ public class GraphicalManagementMenu extends Application {
         parent.getChildren().add(item);
         return item;
     }
+
+    /**
+     * @param title
+     * @param message
+     * @return boolean
+     */
+    public static boolean displayConfirmBox(String title, String message) {
+        Stage window = new Stage();
+
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle(title);
+        window.setMinWidth(250);
+
+        Label label = new Label(message);
+
+        Button yesButton = new Button("Yes");
+        Button noButton = new Button("No");
+
+        yesButton.setOnAction(e -> {
+            answer = true;
+            window.close();
+        });
+        noButton.setOnAction(e -> {
+            answer = false;
+            window.close();
+        });
+
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(label, yesButton, noButton);
+        layout.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(layout);
+        window.setScene(scene);
+        window.showAndWait();
+
+        return answer;
+    }
+
 }

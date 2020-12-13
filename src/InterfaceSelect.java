@@ -5,6 +5,9 @@ import java.util.Scanner;
 public class InterfaceSelect {
     Scanner in;
 
+    /**
+     * @throws IOException
+     */
     // runs the program and allows the user to select between gui and the cli
     // implmentations
     public void run() throws IOException {

@@ -21,6 +21,9 @@ public class ManagementMenu {
         in = new Scanner(System.in);
     }
 
+    /**
+     * @throws IOException
+     */
     // runs the management menu for users
     public void run() throws IOException {
         boolean more = true;
@@ -202,6 +205,11 @@ public class ManagementMenu {
         iSelect.run();
     }
 
+    /**
+     * @param filename
+     * @return ArrayList<String>
+     * @throws IOException
+     */
     // reads in data from csv files
     private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);

@@ -14,31 +14,52 @@ public class Payment {
         this.property = property;
     }
 
+    /**
+     * @param p
+     * @param payment
+     * @param toBePaid
+     * @return String
+     */
     // pays tax for the property specified
     public String payTax(Property p, double payment, double toBePaid) {
         return payment + " paid on property " + p;
     }
 
+    /**
+     * @return double
+     */
     // getter for the amount paid
     public double getAmount() {
         return amount;
     }
 
+    /**
+     * @return LocalDate
+     */
     // getter for the date paid
     public LocalDate getDate() {
         return date;
     }
 
+    /**
+     * @return Owner
+     */
     // getter for the owner who has paid
     public Owner getOwner() {
         return Owner;
     }
 
+    /**
+     * @return String
+     */
     @Override
     public String toString() {
         return "Amount Paid:" + amount + " Date Paid:" + date + "Property Paid For:" + property.toString();
     }
 
+    /**
+     * @return Property
+     */
     // getter for the property being paid for
     public Property getProperty() {
         return property;

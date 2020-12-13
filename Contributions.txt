@@ -1,1 +1,13 @@
+All classes in the project were worked on in a collaborative manner and therefore were completed in part by each member
 
+Unfortunately due to our fourth memeber dropping out during the project progress was affected and therefore classes such as the GUI ,which 
+was in part assigned to him, were affected, resulting in functions in the gui which may be affected by bugs or incomplete 
+
+All classes in the project were worked on in a collaborative manner and therefore were completed in part by each member.
+There were classes where members took more of class on as a primary objective at the time when they were programming the class such as
+Luke(19232691)
+CLI classes-OwnerMenu.java,ManagementMenu.java,InterfaceSelect.java,TaxCalculator.java,help.txt,javadoc comments
+Seanie(19264267)
+Statistics.java,GraphicalManagementMenu.java,Javadoc comments,worked with all csv files
+Jack(19268963)
+Owner.java,Property.java,Payment.java,UML diagram and CRCs,javadoc comments

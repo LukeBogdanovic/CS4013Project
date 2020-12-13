@@ -22,6 +22,9 @@ public class OwnerMenu {
         in = new Scanner(System.in);
     }
 
+    /**
+     * @throws IOException
+     */
     // Runs Owner Menu
     public void run() throws IOException {
         boolean more = true;
@@ -136,6 +139,11 @@ public class OwnerMenu {
         iSelect.run();// allows use of software by other users and through gui
     }
 
+    /**
+     * @param PChoices
+     * @return Property
+     * @throws IOException
+     */
     // gets properties and the tax due for payment on properties for list function
     private Property getProperty(ArrayList<Property> PChoices) throws IOException {
         if (PChoices.size() == 0) {
@@ -155,6 +163,10 @@ public class OwnerMenu {
         }
     }
 
+    /**
+     * @param PChoices
+     * @throws IOException
+     */
     // gets list of properties that needs to have tax paid for
     private void listProperties(ArrayList<Property> PChoices) throws IOException {
         if (PChoices.size() == 0) {
@@ -168,6 +180,12 @@ public class OwnerMenu {
         }
     }
 
+    /**
+     * @param filename
+     * @param p
+     * @param name
+     * @throws IOException
+     */
     // writes properties resgistered to properties.csv
     private void writeToProperties(String filename, Property p, String name) throws IOException {
         try {
@@ -186,6 +204,10 @@ public class OwnerMenu {
         }
     }
 
+    /**
+     * @param filename
+     * @param pay
+     */
     // writes entries to the payments file after a payment has been logged
     private void writeToPayments(String filename, Payment pay) {
         try {
@@ -205,6 +227,14 @@ public class OwnerMenu {
         }
     }
 
+    /**
+     * @param username
+     * @param password
+     * @param owner
+     * @param newUser
+     * @return boolean
+     * @throws IOException
+     */
     // checks user login and if successful, takes the properties of that user from
     // csv and places them in properties arraylist in owner- All users are unique
     // if the user is a new user this will automatically let them into the interface
@@ -250,6 +280,11 @@ public class OwnerMenu {
         }
     }
 
+    /**
+     * @param filename
+     * @return ArrayList<String>
+     * @throws IOException
+     */
     // creates an ArrayList from the data in a specified csv file
     private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);

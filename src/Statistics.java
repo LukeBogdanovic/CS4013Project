@@ -9,6 +9,10 @@ public class Statistics {
     private List<String> hold;
     private BufferedReader br;
 
+    /**
+     * @param eC
+     * @return double
+     */
     // returns the total tax paid for an area specified by the eircode key routing
     public double totalTaxPaid(String eC) {
         Double ttp = 0.0;
@@ -27,6 +31,10 @@ public class Statistics {
         return ttp;
     }
 
+    /**
+     * @param eC
+     * @return double
+     */
     // returns the average tax paid for an area specified by the eircode key routing
     public double averageTaxPaid(String eC) {
         String path = "src/payments.csv";
@@ -46,6 +54,10 @@ public class Statistics {
         return atp;
     }
 
+    /**
+     * @param eC
+     * @return float
+     */
     // returns the percentage of Taxes paid for an area specified by the eircode key
     // routing
     public float percentageOfTaxesPaid(String eC) {
@@ -79,6 +91,10 @@ public class Statistics {
         return pot;
     }
 
+    /**
+     * @param eC
+     * @return int
+     */
     // Returns how many payments have been made for an area specified by the eircode
     // key routing
     public int numberOfPayments(String eC) {
@@ -97,6 +113,10 @@ public class Statistics {
         return num;
     }
 
+    /**
+     * @param filename
+     * @return List<String[]>
+     */
     // returns a List of String[] for use by the other methods of this class
     private List<String[]> getValues(String filename) {
         String line = "";

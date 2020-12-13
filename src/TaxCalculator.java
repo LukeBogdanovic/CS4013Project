@@ -35,16 +35,31 @@ public class TaxCalculator {
         this.propertyRates = propertyRates;
     }
 
+    /**
+     * @param p
+     * @return double
+     * @throws IOException
+     */
     public double overallTax(Property p) throws IOException {
         return propertyTax(p) + overdueTax(p);
     }
 
+    /**
+     * @param p
+     * @return double
+     * @throws IOException
+     */
     // checks the outstanding tax of a single property for one year-no penalty
     public double propertyTax(Property p) throws IOException {
         return fixedCost + (p.getEMV() * getMVTRate(p)) + getLocationCharge(p)
                 + ((p.isPpr() == true) ? flatPprCharge : 0);
     }
 
+    /**
+     * @param o
+     * @return double
+     * @throws IOException
+     */
     // calculates the outstanding tax of properties owned by an Owner
     public double propertyTax(Owner o) throws IOException {
         double taxO = 0;
@@ -54,6 +69,11 @@ public class TaxCalculator {
         return taxO;
     }
 
+    /**
+     * @param p
+     * @return double
+     * @throws IOException
+     */
     // gets the overdue tax on a specific property provided by the user
     public double overdueTax(Property p) throws IOException {
         double overdueTax = propertyTax(p);
@@ -63,6 +83,11 @@ public class TaxCalculator {
         return overdueTax;
     }
 
+    /**
+     * @param year
+     * @return double
+     * @throws IOException
+     */
     // gets all the overdue tax for all properties -overdue tax
     // takes into account the compounding of tax as owners do not pay
     // their property tax
@@ -104,6 +129,12 @@ public class TaxCalculator {
         return Taxes;
     }
 
+    /**
+     * @param year
+     * @param key
+     * @return double
+     * @throws IOException
+     */
     // gets the overdue tax for properties based on the eircode routing key
     public double overdueTax(LocalDate year, String key) throws IOException {
         int j = 0, k = 0;
@@ -148,6 +179,12 @@ public class TaxCalculator {
         return Taxes;
     }
 
+    /**
+     * @param o
+     * @param year
+     * @return String
+     * @throws IOException
+     */
     // returns a balancing statement for a particular Owner
     public String balancingStatement(Owner o, int year) throws IOException {
         double total = 0;
@@ -160,11 +197,21 @@ public class TaxCalculator {
         return "This owner accumulated " + total + " in taxes on their properties this year";
     }
 
+    /**
+     * @param p
+     * @return String
+     * @throws IOException
+     */
     // returns a balancing statement for a particular property for
     public String balancingStatement(Property p) throws IOException {
         return "This property has " + propertyTax(p) + " due in taxes this year";
     }
 
+    /**
+     * @param p
+     * @return int
+     * @throws IOException
+     */
     // counts the number of years a property is overdue on tax
     private int yearsOverdue(Property p) throws IOException {
         int count = 0, k = 0;
@@ -183,6 +230,10 @@ public class TaxCalculator {
         return count;
     }
 
+    /**
+     * @param p
+     * @return double
+     */
     // gets the market value tax rate of the property supplied
     private double getMVTRate(Property p) {
         double rate = 0;
@@ -197,6 +248,10 @@ public class TaxCalculator {
         return rate;
     }
 
+    /**
+     * @param p
+     * @return double
+     */
     // gets the location tax charge associated with the given location
     private double getLocationCharge(Property p) {
         double value = 0;
@@ -209,6 +264,12 @@ public class TaxCalculator {
         return value;
     }
 
+    /**
+     * @param p
+     * @param property
+     * @return boolean
+     * @throws IOException
+     */
     // returns true if a given year
     private boolean getPenalty(Property p, String[] property) throws IOException {
         boolean penalty = false;
@@ -219,6 +280,10 @@ public class TaxCalculator {
         return penalty;
     }
 
+    /**
+     * @param p
+     * @return int
+     */
     // checks how many times the date has passed jan 1st since the registration of
     // property
     private int dateCheck(Property p) {
@@ -227,11 +292,22 @@ public class TaxCalculator {
         return count;
     }
 
+    /**
+     * @param p
+     * @param yearPrevious
+     * @return double
+     * @throws IOException
+     */
     // compounds tax years together
     private double compoundTax(Property p, double yearPrevious) throws IOException {
         return (yearPrevious * (1 + annualPenalty)) + propertyTax(p);
     }
 
+    /**
+     * @param filename
+     * @return ArrayList<String>
+     * @throws IOException
+     */
     // reads in data from csv files
     private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);
