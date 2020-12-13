@@ -69,7 +69,7 @@ public class ManagementMenu {
                             for (int j = 0; j < properties.size(); j++) {
                                 String[] property = properties.get(j).split(",");
                                 Property p = new Property(property[0], property[1], property[2], property[3],
-                                        Double.parseDouble(property[4]), Boolean.parseBoolean(property[5]),
+                                        Double.valueOf(property[4]), Boolean.parseBoolean(property[5]),
                                         LocalDate.parse(property[6]));
                                 owner.addProperty(p);
                                 tax[j] = tC.overallTax(p);

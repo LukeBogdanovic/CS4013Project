@@ -72,7 +72,7 @@ public class TaxCalculator {
         Double[] overdueTaxes = new Double[256];
         String[] property = new String[7];
         propertiesFromCSV = csvReader("src/properties.csv");
-        for (int i = 0; i < propertiesFromCSV.size() + 1; i++) {
+        for (int i = 0; i < propertiesFromCSV.size(); i++) {
             int h = 0;
             while (j < propertiesFromCSV.size()) {
                 property = propertiesFromCSV.get(i).split(",");
@@ -111,7 +111,7 @@ public class TaxCalculator {
         Double[] overdueTaxes = new Double[256];
         String[] property = new String[7];
         propertiesFromCSV = csvReader("src/properties.csv");
-        for (int i = 0; i < propertiesFromCSV.size() + 1; i++) {
+        for (int i = 0; i < propertiesFromCSV.size(); i++) {
             int h = 0;
             while (j < propertiesFromCSV.size()) {
                 property = propertiesFromCSV.get(i).split(",");

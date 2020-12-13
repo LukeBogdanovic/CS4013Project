@@ -1,6 +1,9 @@
 https://github.com/LukeBogdanovic/CS4013Project
+CSV files needed for test data and Compiliation of program are provided in a folder called src
+Accessed by program with path src/"filename".csv
+
 Compiliation at the command line:
 WITH JAVA 1.8:
 javac *.java
 TO RUN THE PROGRAM:
-java main
+java Main

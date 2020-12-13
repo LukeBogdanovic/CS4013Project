@@ -46,7 +46,7 @@ public class OwnerMenu {
         String password = in.nextLine();
         owner = new Owner(username);
         tC = new TaxCalculator();
-        if (userLogin(username, password, owner)) {
+        if (userLogin(username, password, owner, newUser)) {
             System.out.println("Login Successful");
             while (more) {
                 System.out.println(
@@ -56,13 +56,13 @@ public class OwnerMenu {
                 if (command.equals("P")) {
                     System.out.println("What property do you want to pay tax for:\n");
                     Property p = getProperty(owner.getProperties());
-                    System.out.println("To be Paid:€" + df.format(tC.overallTax(p)));
+                    System.out.println("To be Paid:" + df.format(tC.overallTax(p)));
                     double toPay = in.nextDouble();
                     in.nextLine();
                     Payment pay = new Payment(toPay, LocalDate.now(), owner, p);
                     writeToPayments("src/payments.csv", pay);
                     String paid = pay.payTax(p, toPay, tC.overallTax(p));
-                    System.out.println("Paid:€" + paid + " For Property:" + p);
+                    System.out.println("Paid:" + paid + " For Property:" + p);
                     owner.removePaidProperty(p);
                     owner.addPaidProperty(p);
                 }
@@ -205,42 +205,46 @@ public class OwnerMenu {
 
     // checks user login and if successful, takes the properties of that user from
     // csv and places them in properties arraylist in owner- All users are unique
-    private boolean userLogin(String username, String password, Owner owner) throws IOException {
-        ArrayList<String> systemLogins = new ArrayList<String>();
-        String[] login = new String[2], propArray = new String[7];
-        systemLogins = csvReader("src/systemLogins.csv");
-        ArrayList<String> properties = new ArrayList<String>();
-        properties = csvReader("src/properties.csv");
-        int i = 0, k = 0;
-        for (int j = 0; j < systemLogins.size(); j++) {
-            for (int h = 0; h < properties.size() + 1; h++) {
-                while (i < systemLogins.size()) {
-                    login = systemLogins.get(i).split(",");
-                    break;
-                }
-                if (login[0].equals(username) && login[1].equals(password)) {
+    private boolean userLogin(String username, String password, Owner owner, String newUser) throws IOException {
+        if (newUser.equals("YES") || newUser.equals("Y")) {
+            return true;
+        } else {
+            ArrayList<String> systemLogins = new ArrayList<String>();
+            String[] login = new String[2], propArray = new String[7];
+            systemLogins = csvReader("src/systemLogins.csv");
+            ArrayList<String> properties = new ArrayList<String>();
+            properties = csvReader("src/properties.csv");
+            int i = 0, k = 0;
+            for (int j = 0; j < systemLogins.size(); j++) {
+                for (int h = 0; h < properties.size() + 1; h++) {
                     while (i < systemLogins.size()) {
-                        while (k < properties.size()) {
-                            propArray = properties.get(k).split(",");
-                            if (propArray[0].equals(username)) {
-                                Property p = new Property(username, propArray[1], propArray[2], propArray[3],
-                                        Double.parseDouble(propArray[4]), Boolean.parseBoolean(propArray[5]),
-                                        LocalDate.parse(propArray[6]));
-                                owner.addProperty(p);
+                        login = systemLogins.get(i).split(",");
+                        break;
+                    }
+                    if (login[0].equals(username) && login[1].equals(password)) {
+                        while (i < systemLogins.size()) {
+                            while (k < properties.size()) {
+                                propArray = properties.get(k).split(",");
+                                if (propArray[0].equals(username)) {
+                                    Property p = new Property(username, propArray[1], propArray[2], propArray[3],
+                                            Double.parseDouble(propArray[4]), Boolean.parseBoolean(propArray[5]),
+                                            LocalDate.parse(propArray[6]));
+                                    owner.addProperty(p);
+                                }
+                                break;
+                            }
+                            if (k == properties.size()) {
+                                return true;
                             }
                             break;
                         }
-                        if (k == properties.size()) {
-                            return true;
-                        }
-                        break;
                     }
+                    k++;
                 }
-                k++;
+                i++;
             }
-            i++;
+            return false;
         }
-        return false;
     }
 
     // reads in data from csv files
