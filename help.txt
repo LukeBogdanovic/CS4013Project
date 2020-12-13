@@ -1,7 +1,8 @@
 https://github.com/LukeBogdanovic/CS4013Project
 CSV files needed for test data and Compiliation of program are provided in a folder called src
 Accessed by program with path src/"filename".csv
-
+If the program begins to error when using the management functions: Owner tax and Overdue tax 
+check the csv file properties in the src file for entries that are missing a data point
 Compiliation at the command line:
 WITH JAVA 1.8:
 javac *.java

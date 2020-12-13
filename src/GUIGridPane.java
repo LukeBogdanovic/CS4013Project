@@ -41,7 +41,8 @@ public class GUIGridPane {
         GridPane.setConstraints(passInput, 1, 1);
 
         Button loginButton = new Button("Log In");
-        GridPane.setConstraints(loginButton, 1, 2);
+        loginButton.setOnAction(e -> nameInput.getText());
+        GridPane.setConstraints(loginButton, 2, 2);
 
         grid.getChildren().addAll(nameLabel, nameInput, passLabel, passInput, loginButton);
 
@@ -51,8 +52,9 @@ public class GUIGridPane {
         window.showAndWait();
     }
 
-    public static void managerLogin(String title) {
+    public static String[] managerLogin(String title) {
         Stage window = new Stage();
+        String[] login = { "", "" };
         window.setTitle(title);
 
         GridPane grid = new GridPane();
@@ -78,13 +80,32 @@ public class GUIGridPane {
         GridPane.setConstraints(passInput, 1, 1);
 
         Button loginButton = new Button("Log In");
-        GridPane.setConstraints(loginButton, 1, 2);
+        loginButton.setOnAction(e -> {
+            try {
+
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+
+            // login[0] = nameInput.getText();
+            // login[1] = passInput.getText();
+            // window.close();
+        });
+        GridPane.setConstraints(loginButton, 2, 2);
 
         grid.getChildren().addAll(nameLabel, nameInput, passLabel, passInput, loginButton);
 
         Scene scene = new Scene(grid, 300, 200);
         window.setScene(scene);
-
         window.showAndWait();
-    }
-}
+        return login;
+
+            // login[0] = nameInput.getText();
+            // login[1] = passInput.getText();
+            // window.close();
+        });GridPane.setConstraints(loginButton,2,2);
+
+    grid.getChildren().addAll(nameLabel,nameInput,passLabel,passInput,loginButton);
+
+    Scene scene = new Scene(grid, 300, 200);window.setScene(scene);window.showAndWait();return login;
+}}

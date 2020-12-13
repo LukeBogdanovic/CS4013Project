@@ -22,6 +22,7 @@ public class OwnerMenu {
         in = new Scanner(System.in);
     }
 
+    // Runs Owner Menu
     public void run() throws IOException {
         boolean more = true;
         InterfaceSelect iSelect = new InterfaceSelect();
@@ -45,7 +46,8 @@ public class OwnerMenu {
         System.out.println("Enter Password");
         String password = in.nextLine();
         owner = new Owner(username);
-        tC = new TaxCalculator();
+        tC = new TaxCalculator(); // default tax calculator initialized
+        // checks login details against databasse
         if (userLogin(username, password, owner, newUser)) {
             System.out.println("Login Successful");
             while (more) {
@@ -205,6 +207,7 @@ public class OwnerMenu {
 
     // checks user login and if successful, takes the properties of that user from
     // csv and places them in properties arraylist in owner- All users are unique
+    // if the user is a new user this will automatically let them into the interface
     private boolean userLogin(String username, String password, Owner owner, String newUser) throws IOException {
         if (newUser.equals("YES") || newUser.equals("Y")) {
             return true;
@@ -247,7 +250,7 @@ public class OwnerMenu {
         }
     }
 
-    // reads in data from csv files
+    // creates an ArrayList from the data in a specified csv file
     private ArrayList<String> csvReader(String filename) throws IOException {
         Path pathToFile = Paths.get(filename);
         ArrayList<String> attributes = new ArrayList<String>();

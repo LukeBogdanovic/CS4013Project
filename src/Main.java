@@ -7,5 +7,4 @@ public class Main {
         InterfaceSelect iSelect = new InterfaceSelect();
         iSelect.run();
     }
-
 }

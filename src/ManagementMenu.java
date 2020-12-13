@@ -10,10 +10,11 @@ import java.util.ArrayList;
 
 public class ManagementMenu {
     private Scanner in;
-    private ArrayList<String> ownerList, properties;// need to add owners to this list at startup of program
-    private TaxCalculator tC;
-    private Statistics st;
-    private DecimalFormat df = new DecimalFormat("0.00");
+    private ArrayList<String> ownerList, properties;// arraylists to store input from csv files
+    private TaxCalculator tC;// tax calculator object
+    private Statistics st;// statistics object
+    private DecimalFormat df = new DecimalFormat("0.00");// formats the output for decimals so as to appear like
+                                                         // monetary values
 
     // initialises scanner for the CLI management menu
     public ManagementMenu() {
@@ -25,10 +26,11 @@ public class ManagementMenu {
         boolean more = true;
         InterfaceSelect iSelect = new InterfaceSelect();
         System.out.println("Enter username for management:");
-        String manager = in.nextLine().toUpperCase();
+        String manager = in.nextLine();
         System.out.println("Enter password for management:");
-        String password = in.nextLine().toUpperCase();
-        if (manager.equals("MANAGER") && password.equals("PASSWORD")) {
+        String password = in.nextLine().toLowerCase();
+        if (manager.equalsIgnoreCase("MANAGER") && password.equals("password")) {
+            System.out.println("Login Successful");
             tC = new TaxCalculator();
             st = new Statistics();
             while (more) {
@@ -97,11 +99,11 @@ public class ManagementMenu {
                     if (response.equals("YES") || response.equals("Y")) {
                         System.out.println("Enter Eircode routing key:");
                         String key = in.nextLine();
-                        System.out.println(tC.overdueTax(year, key));
+                        System.out.println(df.format(tC.overdueTax(year, key)));
                     }
                     // overdue tax just for year
                     else {
-                        System.out.println(tC.overdueTax(year));
+                        System.out.println(df.format(tC.overdueTax(year)));
                     }
 
                 }
@@ -112,36 +114,39 @@ public class ManagementMenu {
                         System.out.println(
                                 "Choose Statistic\nT)otal Tax Paid // A)verage Tax Paid // P)ercentage of Property Taxes Paid // N)umber of Property Taxes paid // B)ack");
                         String com = in.nextLine().toUpperCase();
-                        // gets total tax paid
+                        // gets total tax paid for by eircode routing key
                         if (com.equals("T")) {
                             System.out.println("Eircode key for routing:");
                             String eC = in.nextLine().toUpperCase();
                             System.out.println(st.totalTaxPaid(eC));
                         }
-                        // gets average tax paid
+                        // gets average tax paid for by eircode routing key
                         else if (com.equals("A")) {
                             System.out.println("Eircode key for routing:");
                             String eC = in.nextLine().toUpperCase();
                             System.out.println(st.averageTaxPaid(eC));
                         }
-                        // gets the number and percentage of property taxes paid
+                        // gets the percentage of property taxes paid for by eircode routing key
                         else if (com.equals("P")) {
                             System.out.println("Eircode key for routing:");
                             String eC = in.nextLine().toUpperCase();
                             System.out.println(st.percentageOfTaxesPaid(eC));
                         }
-
+                        // gets the number of properties paid for by eircode routing key
                         else if (com.equals("N")) {
                             System.out.println("Eircode key for routing:");
                             String eC = in.nextLine().toUpperCase();
                             System.out.println(st.numberOfPayments(eC));
                         }
-
+                        // exits the statistics page of the CLI
                         else if (com.equals("B")) {
                             M = false;
                         }
                     }
-
+                    // investigates the changes in payment values based on the changing the tax
+                    // system used-NB.user must check the changes manually according to the default
+                    // tax system through the property tax and owner tax functions of the management
+                    // CLI
                 } else if (command.equals("I")) {
                     double fixedCost, flatPprCharge, annualPenalty;
                     String[] Locations;
@@ -152,7 +157,7 @@ public class ManagementMenu {
                     System.out.println("Enter new Flat Principal Private Property Charge");
                     flatPprCharge = in.nextDouble();
                     in.nextLine();
-                    System.out.println("Enter new annual penalty");
+                    System.out.println("Enter new annual penalty e.g. 0.08");
                     annualPenalty = in.nextDouble();
                     in.nextLine();
                     System.out.println("Enter List of Locations in this format: City,Town,Village");
@@ -183,7 +188,7 @@ public class ManagementMenu {
                     }
 
                     tC = new TaxCalculator(fixedCost, flatPprCharge, annualPenalty, Locations, pValues, locationsCharge,
-                            propertyRates);
+                            propertyRates);// creates a new taxcalculator for comparing the tax statistics
 
                 }
                 // quits the program
